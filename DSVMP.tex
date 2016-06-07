@@ -313,6 +313,8 @@
 \usepackage{amssymb}
 \usepackage{subfigure}
 \usepackage{xspace}
+\usepackage[british,UKenglish,USenglish,english,american]{babel}
+
 
 \newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
 \newcommand{\DSVMP}{\textsc{Dsvmp}\xspace}
@@ -339,7 +341,7 @@ Tianzhang Xing\IEEEauthorrefmark{2}, Guixin Ye\IEEEauthorrefmark{2}, Jie Zhang\I
 %\IEEEauthorrefmark{2}\{xx, zytang, xiaoqinggong, dyf, ...\}@nwu.edu.cn, \IEEEauthorrefmark{3}z.wang@lancaster.ac.uk
 }
 %NWU-Irdeto IoT-Information Security Joint Laboratory\\
-%$^*$Correspondence should be addressed to Zhanyong Tang, Email: zytang@nwu.edu.cn} 
+%$^*$Correspondence should be addressed to Zhanyong Tang, Email: zytang@nwu.edu.cn}
 }
 %\and
 %\IEEEauthorblockN{Homer Simpson}
@@ -398,10 +400,10 @@ program follows a single, static execution path for the same input. Such
 approaches, however, are vulnerable to dynamic cumulative attacks where the
 attacker can reuse knowledge extracted from previously seen software
 to crack applications using similar protection schemes. This paper
-presents \DSVMP, a novel VM-based code obfuscation approach for protecting software 
+presents \DSVMP, a novel VM-based code obfuscation approach for protecting software
 against dynamic cumulative attacks.
 \DSVMP brings together two techniques to provide stronger
-code protection than prior VM-based schemes. 
+code protection than prior VM-based schemes.
 Firstly, it uses a dynamic instruction
 scheduler to randomly direct the program to execute different paths without
 violating the correctness across different runs. By randomly choosing
@@ -410,9 +412,9 @@ it much more difficult for an attacker to reuse the knowledge collected from
 previous runs or similar applications to perform attacks. Secondly, it employs
 multiple VMs to further obfuscate the relationship between VM bytecode and
 their interpreters, making code analysis even harder. We have implemented
-\DSVMP  in a prototype system and evaluated it using commercial applications.
-Experimental results show that \DSVMP performs well in terms of security and
-runtime overhead.
+\DSVMP  in a prototype system and evaluated it using a set of widely used applications.
+Experimental results show that \DSVMP provides stronger protection with lower runtime overhead
+and code size when compared to two commercial VM-based code obfuscation tools.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -437,7 +439,7 @@ Code virtualization; Code Obfuscation; Dynamic cumulative attack
 
 \section{Introduction}
 Unauthorized code analysis and modification based on software reverse
-engineering is a critical issue for software companies. Such attacks lead to
+engineering is a critical issue for software companies. Such attacks can lead to
 a number of undesired outcomes, including cheating in games, unauthorized
 used of software, pirated pay-tv etc. Industry is looking for techniques to
 address this issue to prevent tampering and deter reverse engineering of software systems. By making the
@@ -448,75 +450,78 @@ solution for the problem.
 
 Code virtualization building upon a virtual machine (VM) is emerging as a
 promising way for implementing code
-obfuscation\cite{1Themida,2CV,3Vmprotect,5fang2011multi,6ming2011software,7wang2014tdvmp,8wang2013nislvmp}.
+obfuscation~\cite{1Themida,2CV,3Vmprotect,5fang2011multi,6ming2011software,7wang2014tdvmp,8wang2013nislvmp}.
 The idea of VM-based protection is to replace the native machine code with
-virtual bytecodes which will then be translated into native machine code at runtime using a set of
-bytecode handlers. Using a VM-based scheme, the execution path of the
+virtual bytecodes which will then be translated into native machine code at runtime. Using a VM-based scheme, the execution path of the
 obfuscated code is controlled by a virtual instruction scheduler.
 A typical
 scheduler consists of two parts: a dispatcher that determines which virtual
 instruction (i.e. bytecode) is ready for execution, and an instruction handler that translates
 the bytecode into native machine code to be executed on the underlying
-hardware. This process replaces the original program instructions by using
-virtual bytecode, allowing developers to conceal the purpose or logic of sensitive part of the program. 
+hardware. This process replaces the original program instructions with
+bespoke bytecodes, allowing developers to conceal the purpose or logic of sensitive code regions.
 
 
 Prior work on VM-based software protection has primarily focused on making
-the bytecode more complicate, but they only define a fixed set of bytecode
-instructions and use one scheduler.
+a single set of bytecode more complicate and used only one virtual scheduler.
 Such approaches rely on the assumption that the scheduler and the bytecode
-instruction set are difficult to be cracked in most practical runtime
-environments. However, research has shown that is an unreliable
-assumption~\cite{10falliere2009inside}. In fact, an adversary can easily
-crack a software product by reusing the knowledge extracted from other
-applications protected with the same set of VM tools. This is known as the \emph{dynamic cumulative attacking method}.
-To solve the problem, it is vital important to introduce a certain degree of diversity into program execution~\cite{4collberg}.
+instruction set are difficult to be analyzed in most practical runtime
+environments. However, research has shown that is a rather unreliable
+assumption~\cite{10falliere2009inside} under \emph{dynamic cumulative attacks} where an adversary can easily
+reuse  knowledge extracted from other
+applications protected with the same set of VM tools to preform reverse engineering. 
+To protect software against dynamic cumulative attacks, it is vital important to introduce a certain degree of uncertainty and diversity into program execution~\cite{4collberg}.
 
 This paper presents \DSVMP, a novel VM-based code protection scheme to
-addresses the problem of dynamic cumulative attacks.  Our key insight is that
+address the problem of dynamic cumulative attacks.  Our key insight is that
 it will be much more difficult for the attacker to analyze the code if the
 program behaves differently in different runs. We achieve this by introducing
-rich diversity into the program execution and bytecode interpretation. To increase diversity of the
-program behavior, \DSVMP
-exploits a flexible, multi-dispatched scheme for code scheduling interpretation. Unlike prior work where a program always follows a
+rich uncertainty into the program execution and bytecode interpretation. To do so, \DSVMP
+exploits a flexible, multi-dispatched scheme for code scheduling and interpretation. Unlike prior work where a program always follows a
 single, fixed execution path for the same input across different runs, the
 \DSVMP scheduler directs the program to execute a randomly selected path when
 executing a protected code region. As a result, the program follows different
-execution paths in different runs and behaves differently. Our carefully
+execution paths in different runs and has non-deterministic behavior. Our carefully
 designed scheme ensures that the program will produces a deterministic output
 for the same input despite the execution paths might look differently from
 the attacker's perspective. To analyze software protected under \DSVMP, the
 adversary is forced to use a large number of trail runs to understand how the
-program algorithm works. As a result, this significantly increases the cost for reading, writing and reverse-engineering a program.
+program algorithm works. As a result, this significantly increases the cost for code reverse-engineering.
 
 
-Uncertainty and diversity are keys for deterring dynamic cumulative attacks. 
-\DSVMP brings together two techniques to increase uncertainty and diversity of program behaviour.
-Firstly, to provide a certain degree of uncertainty, \DSVMP provides
- multiple handlers (that are implemented using different algorithms and data structures) for each bytecode instruction. 
-Handlers for a particular bytecode instruction 
-generate an identical output for the same input, but their execution paths and data accessing patterns are different from each other. 
+%Uncertainty and diversity are keys for deterring dynamic cumulative attacks.
+In addition to dynamic instruction scheduling, \DSVMP brings together two other techniques to increase diversity of program behaviour.
+Firstly, \DSVMP provides
+ multiple handlers, which are implemented using different algorithms and data structures, to translate a bytecode instruction to native code.
+Handlers for a particular bytecode
+all generate an identical output for the same input, but their execution paths and data accessing patterns are different from each other.
 During runtime,  our VM instruction scheduler
-randomly selects an bytecode handler to translate a virtual instruction to the native machine code. 
+randomly selects an bytecode handler to translate a virtual instruction to the native machine code.
 Since the
 choice of handlers is randomly determined at runtime for each bytecode
-instruction, the program execution path is likely to be different in
-different runs. Secondly, \DSVMP employs a multi-VM scheme so that different
+instruction and the implementation of different handlers are different, the dynamic program execution path is likely to be different in
+different runs. Secondly, \DSVMP employs a multi-VM scheme so that various
 code regions can be protected using different bytecode instruction sets and VM
-implementations. This further increases diversity of the program, 
+implementations. This further increases diversity of the program,
 making it even harder for an adversary to analyze
-the software behavior or reusable knowledge extracted from other software
+the software behavior or reuse knowledge extracted from other software
 products (as different products are likely to be protected by different
-bytecodes instructions and VM implementations).
+bytecodes instructions and VM implementations). 
 
+
+The whole is greater than the sum of the parts.
+These techniques, putting together, enable \DSVMP to provide much stronger code protection than any of the VM-based techniques seen so far. 
+We have evaluated \DSVMP on four widely used hashing and encryption applications:  \texttt{md5},
+\texttt{aescrypt}, \texttt{bcrypt}, and \texttt{gzip}. Experimental results show that \DSVMP provides stronger protection
+with lower runtime overhead and smaller code size compared to two commercial VM-based code obfuscation tools: Code Virtualizer~\cite{2CV} and VMProtect~\cite{3Vmprotect}.
 
 
 This paper makes the following contributions:
-\begin{enumerate}
+\begin{itemize}
   \item It presents a dynamic scheduling structure for VM-based code obfuscation to protect software against dynamic cumulative attacks.
-  \item It is the first to apply multiple VMs to enhance diversity of code obfuscation. 
-  \item It demonstrates that the proposed scheme is effective in protecting real-world commercialized software applications.
-\end{enumerate}
+  \item It is the first to apply multiple VMs to enhance diversity of code obfuscation.
+  \item It demonstrates that the proposed scheme is effective in protecting real-world software applications.
+\end{itemize}
 
 
 %\par The rest of this paper is organized as follows. Section II introduces the working principle of classical VM-based code obfuscation techniques. Section III describes the attacking scenario. Section IV gives an overview of \DSVMP, which is followed by a detailed description of the design in Section V. Section VI uses a case study to demonstrate protection scheme provided by \DSVMP. Evaluation results are presented in Sections VII and VIII before we discuss the related work in Section IX. Finally, Section X concludes the paper.
@@ -524,7 +529,7 @@ This paper makes the following contributions:
 
 
 \section{Background}
-VM-based code obfuscation transform native instructions of the protected code regions to virtual instructions. The virtual instructions are encoded into bytecodes which will be translated native machine code at runtime by bytecode handlers. Indeed, a new VM section is inserted to the end of target program and remaining code is kept intact, thus entry point of the protected code is redirected into VM section. In general, classic VM bytecode execution is stack based style, and need for a virtual context (VMcontext), which usually is a block of memory that contains the virtual registers and flags. The return value of each bytecode is saved in virtual registers, for next bytecode execution. When entering the VM, the native context is stored in the VMcontext to initialize the virtual context, and when exiting the VM, native context will be restored based on the virtual context. The VM interpreter is the core of the VM, which consists of a dispatcher and the handling procedures of bytecode instructions (handlers). The main loop that iterates through three phases for every instruction: decode, dispatch and execute\cite{9ghosh2012replacement}. Werewolf or assassin, dispatcher fetch a bytecode, then decode and dispatch a handler to interpret it. Obviously, the adversary can crack the original software easily if he understands the virtual interpreter and decodes mapping between two instruction sets (binary codes and bytecodes).
+VM-based code obfuscation transform native instructions of the protected code regions to virtual instructions. The virtual instructions are encoded into bytecode  which will be translated to native machine code at runtime using a set of bytecode handlers. Indeed, a new VM section is inserted to the end of target program and remaining code is kept intact, thus entry point of the protected code is redirected into VM section. In general, classic VM bytecode execution is stack based style, and need for a virtual context (VMcontext), which usually is a block of memory that contains the virtual registers and flags. The return value of each bytecode is saved in virtual registers, for next bytecode execution. When entering the VM, the native context is stored in the VMcontext to initialize the virtual context, and when exiting the VM, native context will be restored based on the virtual context. The VM interpreter is the core of the VM, which consists of a dispatcher and the handling procedures of bytecode instructions (handlers). The main loop that iterates through three phases for every instruction: decode, dispatch and execute\cite{9ghosh2012replacement}. Werewolf or assassin, dispatcher fetch a bytecode, then decode and dispatch a handler to interpret it. Obviously, the adversary can crack the original software easily if he understands the virtual interpreter and decodes mapping between two instruction sets (binary codes and bytecodes).
 
 
 \textbf{Dynamic cumulative attack} Figure\ref{fig:Fig.1} illustrates how
@@ -740,8 +745,9 @@ We evaluate the performance impact of \DSVMP on a PC with Intel$^{\circledR}$ Co
 \subsubsection{Impact on File Size and Runtime Performance}
 For each target program, we use the prototype of \DSVMP to protect it for 5 times, each time using a different number of VM. Figure \ref{fig:Fig.6} (a) shows the impact on file size of \DSVMP with multi-VM protection. Since each VM has two sets of driver-data and one set of handlers, the file size of the protected program increases as the number of VM increases. Besides, exist a positive correlation between the sizes of and the number of critical instructions, so "aescrypt" has the fastest increasing of file size, "bcrypt" is slowest.
 \par To evaluate the runtime overhead that \DSVMP introduces, we use each programs to process the "test.jpg" file for 10 times. Then we calculate the average runtime overhead per critical instruction and the results are shown in Figure \ref{fig:Fig.6} (b). The runtime overhead increases as the number of VM increases. But 3VM always has a lower overhead than 2VM, this is not just a coincidence, one possible reason is the implementation strategy we use in multi-VM protection. Besides, "aescrypt" has a much higher runtime overhead that other program. Because its critical code more complex and needs more virtual instructions to interpret.
+
 \subsubsection{Comparison with two commercial VM-based protection tools}
-To illustrate the applicability of \DSVMP, we compare it with two commercial VM protection systems, Code Virtualizer\cite{2CV} and VMProtect\cite{3Vmprotect}. As we only compare the impact of code virtualization protection, we disable other protection techniques that integrated into VMProtect and CV, e.g., code compression, resource protection, etc. Besides, CV has 24 custom VMs that are devised ahead of protection, and we choose one of moderate complexity and speed, namely the FISH32 (White), to protect. As for \DSVMP, it with 2 VMs. Figure \ref{fig:Fig.7} (a) shows the impact on file size of three different VM protection systems. CV has the fastest increasing of file size, but the increasing of the size is relatively stable and independent on original program size; this is true for \DSVMP and VMProtect as well. Figure \ref{fig:Fig.7} (b) introduces the comparison of three VM protection systems on average runtime overhead. CV has the largest runtime overhead while VMProtect the smallest and \DSVMP the moderate.
+To illustrate the applicability of \DSVMP, we compare it with two commercial VM protection systems, Code Virtualizer~\cite{2CV} and VMProtect~\cite{3Vmprotect}. As we only compare the impact of code virtualization protection, we disable other protection techniques that integrated into VMProtect and CV, e.g., code compression, resource protection, etc. Besides, CV has 24 custom VMs that are devised ahead of protection, and we choose one of moderate complexity and speed, namely the FISH32 (White), to protect. As for \DSVMP, it with 2 VMs. Figure \ref{fig:Fig.7} (a) shows the impact on file size of three different VM protection systems. CV has the fastest increasing of file size, but the increasing of the size is relatively stable and independent on original program size; this is true for \DSVMP and VMProtect as well. Figure \ref{fig:Fig.7} (b) introduces the comparison of three VM protection systems on average runtime overhead. CV has the largest runtime overhead while VMProtect the smallest and \DSVMP the moderate.
 \par \DSVMP improved the atom handler, operations of the control unit will cost some time overhead, and embedded the multiple VM also will increase the volume. In general, our approach gets a better performance.
 \begin{table}
   \centering
