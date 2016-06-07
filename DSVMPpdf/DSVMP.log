@@ -1,0 +1,330 @@
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.17)  7 JUN 2016 09:08
+entering extended mode
+**F:/github/repository/kky-paper/DSVMPpdf/DSVMP.tex
+(F:/github/repository/kky-paper/DSVMPpdf/DSVMP.tex
+LaTeX2e <2011/06/27>
+Babel <v3.8m> and hyphenation patterns for loaded.
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\ieeetran\IEEEtran.cls"
+Document Class: IEEEtran 2007/03/05 V1.7a by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+\@IEEEtrantmpdimenA=\dimen102
+\@IEEEtrantmpdimenB=\dimen103
+\@IEEEtrantmpcountA=\count79
+\@IEEEtrantmpcountB=\count80
+\@IEEEtrantmptoksA=\toks14
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 366.
+
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\psnfss\ot1ptm.fd"
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+-- Using 8.5in x 11in (letter) paper.
+-- Using PDF output.
+\@IEEEnormalsizeunitybaselineskip=\dimen104
+-- This is a 10 point document.
+\CLASSINFOnormalsizebaselineskip=\dimen105
+\CLASSINFOnormalsizeunitybaselineskip=\dimen106
+\IEEEnormaljot=\dimen107
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <11> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <11> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <17> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+\IEEEilabelindentA=\dimen108
+\IEEEilabelindentB=\dimen109
+\IEEEilabelindent=\dimen110
+\IEEEelabelindent=\dimen111
+\IEEEdlabelindent=\dimen112
+\IEEElabelindent=\dimen113
+\IEEEiednormlabelsep=\dimen114
+\IEEEiedmathlabelsep=\dimen115
+\IEEEiedtopsep=\skip41
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@IEEEsubequation=\count85
+\abovecaptionskip=\skip42
+\belowcaptionskip=\skip43
+\c@figure=\count86
+\c@table=\count87
+\@IEEEeqnnumcols=\count88
+\@IEEEeqncolcnt=\count89
+\@IEEEtmpitemindent=\dimen116
+\c@IEEEbiography=\count90
+\@IEEEtranrubishbin=\box26
+) ("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\graphics\keyval.sty"
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\graphics\graphics.sty"
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/message (HO)
+)
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/04/18 v1.20 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count91
+))
+\Gin@req@height=\dimen117
+\Gin@req@width=\dimen118
+)
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\amsfonts\amssymb.sty"
+Package: amssymb 2009/06/22 v3.00
+
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\amsfonts\amsfonts.sty"
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\@emptytoks=\toks16
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+))
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\subfigure\subfigure.sty"
+Package: subfigure 2002/07/30 v2.1.4 subfigure package
+\subfigtopskip=\skip44
+\subfigcapskip=\skip45
+\subfigcaptopadj=\dimen119
+\subfigbottomskip=\skip46
+\subfigcapmargin=\dimen120
+\subfiglabelskip=\skip47
+\c@subfigure=\count92
+\c@lofdepth=\count93
+\c@subtable=\count94
+\c@lotdepth=\count95
+
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\subfigure\subfigure.cfg")
+\subfig@top=\skip48
+\subfig@bottom=\skip49
+)
+(F:\github\repository\kky-paper\DSVMPpdf\DSVMP.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 318.
+LaTeX Font Info:    ... okay on input line 318.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 318.
+LaTeX Font Info:    ... okay on input line 318.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 318.
+LaTeX Font Info:    ... okay on input line 318.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 318.
+LaTeX Font Info:    ... okay on input line 318.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 318.
+LaTeX Font Info:    ... okay on input line 318.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 318.
+LaTeX Font Info:    ... okay on input line 318.
+
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\context\base\supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count96
+\scratchdimen=\dimen121
+\scratchbox=\box27
+\nofMPsegments=\count97
+\nofMParguments=\count98
+\everyMPshowfont=\toks17
+\MPscratchCnt=\count99
+\MPscratchDim=\dimen122
+\MPnumerator=\count100
+\makeMPintoPDFobject=\count101
+\everyMPtoPDFconversion=\toks18
+)
+LaTeX Font Info:    Calculating math sizes for size <11> on input line 380.
+LaTeX Font Info:    Try loading font information for U+msa on input line 380.
+ ("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 380.
+
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+)
+Missing character: There is no ¡ in font ptmb7t!
+Missing character: There is no ¯ in font ptmb7t!
+Missing character: There is no ¡ in font ptmr7t!
+Missing character: There is no ¯ in font ptmr7t!
+ [1{D:/Program Files (x86)/CTEX/UserData/pdftex/config/pdftex.map{Unicode.sfd}{
+UGBK.sfd}}
+
+
+]
+<figure/figone.pdf, id=12, 417.81094pt x 187.0178pt>
+File: figure/figone.pdf Graphic file (type pdf)
+ <use figure/figone.pdf>
+Package pdftex.def Info: figure/figone.pdf used on input line 428.
+(pdftex.def)             Requested size: 252.0pt x 112.7994pt.
+
+[2 <F:/github/repository/kky-paper/DSVMPpdf/figure/figone.pdf>]
+<figure/figtwo.pdf, id=305, 391.4625pt x 199.22841pt>
+File: figure/figtwo.pdf Graphic file (type pdf)
+ <use figure/figtwo.pdf>
+Package pdftex.def Info: figure/figtwo.pdf used on input line 454.
+(pdftex.def)             Requested size: 252.0pt x 128.25357pt.
+Missing character: There is no ¡ in font ptmr7t!
+Missing character: There is no ° in font ptmr7t!
+Missing character: There is no ¡ in font ptmr7t!
+Missing character: There is no ± in font ptmr7t!
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 462.
+
+
+("D:\Program Files (x86)\CTEX\MiKTeX\tex\latex\psnfss\ot1pcr.fd"
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+<figure/figdh.pdf, id=306, 527.13435pt x 272.16261pt>
+File: figure/figdh.pdf Graphic file (type pdf)
+ <use figure/figdh.pdf>
+Package pdftex.def Info: figure/figdh.pdf used on input line 483.
+(pdftex.def)             Requested size: 226.79846pt x 117.09824pt.
+
+[3 <F:/github/repository/kky-paper/DSVMPpdf/figure/figtwo.pdf>]
+<figure/figmvm.pdf, id=328, 288.3272pt x 115.24565pt>
+File: figure/figmvm.pdf Graphic file (type pdf)
+ <use figure/figmvm.pdf>
+Package pdftex.def Info: figure/figmvm.pdf used on input line 499.
+(pdftex.def)             Requested size: 201.60077pt x 80.58345pt.
+
+Underfull \hbox (badness 1383) in paragraph at lines 506--507
+ \OT1/ptm/m/it/10 2) Schedu-la-bil-i-ty of Multi-VM: [][] \OT1/ptm/m/n/10 The f
+or-mer dis-patch-er
+ []
+
+[4 <F:/github/repository/kky-paper/DSVMPpdf/figure/figdh.pdf> <F:/github/reposi
+tory/kky-paper/DSVMPpdf/figure/figmvm.pdf>]
+<figure/figex.pdf, id=377, 321.45094pt x 116.08751pt>
+File: figure/figex.pdf Graphic file (type pdf)
+ <use figure/figex.pdf>
+Package pdftex.def Info: figure/figex.pdf used on input line 538.
+(pdftex.def)             Requested size: 252.0pt x 91.00844pt.
+
+[5 <F:/github/repository/kky-paper/DSVMPpdf/figure/figex.pdf>] [6]
+Missing character: There is no ¡ in font ptmr7t!
+Missing character: There is no ° in font ptmr7t!
+Missing character: There is no ¡ in font ptmr7t!
+Missing character: There is no ± in font ptmr7t!
+
+<figure/fig6a.pdf, id=407, 268.00125pt x 190.7125pt>
+File: figure/fig6a.pdf Graphic file (type pdf)
+ <use figure/fig6a.pdf>
+Package pdftex.def Info: figure/fig6a.pdf used on input line 654.
+(pdftex.def)             Requested size: 123.84283pt x 88.12747pt.
+
+<figure/fig6b.pdf, id=408, 265.99374pt x 190.7125pt>
+File: figure/fig6b.pdf Graphic file (type pdf)
+ <use figure/fig6b.pdf>
+Package pdftex.def Info: figure/fig6b.pdf used on input line 655.
+(pdftex.def)             Requested size: 123.84283pt x 88.79097pt.
+
+<figure/fig7a.pdf, id=409, 286.06876pt x 191.71625pt>
+File: figure/fig7a.pdf Graphic file (type pdf)
+ <use figure/fig7a.pdf>
+Package pdftex.def Info: figure/fig7a.pdf used on input line 658.
+(pdftex.def)             Requested size: 123.84283pt x 82.99512pt.
+
+<figure/fig7b.pdf, id=410, 286.06876pt x 192.72pt>
+File: figure/fig7b.pdf Graphic file (type pdf)
+ <use figure/fig7b.pdf>
+Package pdftex.def Info: figure/fig7b.pdf used on input line 659.
+(pdftex.def)             Requested size: 123.84283pt x 83.42964pt.
+
+[7 <F:/github/repository/kky-paper/DSVMPpdf/figure/fig6a.pdf> <F:/github/reposi
+tory/kky-paper/DSVMPpdf/figure/fig6b.pdf> <F:/github/repository/kky-paper/DSVMP
+pdf/figure/fig7a.pdf> <F:/github/repository/kky-paper/DSVMPpdf/figure/fig7b.pdf
+>] (F:\github\repository\kky-paper\DSVMPpdf\DSVMP.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 80--82
+[]\OT1/ptm/m/n/8 ``Sysinternals suit-e,'' https://technet.microsoft.com/en-
+ []
+
+)
+
+** Conference Paper **
+Before submitting the final camera ready copy, remember to:
+
+ 1. Manually equalize the lengths of two columns on the last page
+ of your paper;
+
+ 2. Ensure that any PostScript and/or PDF output post-processing
+ uses only Type 1 fonts and that every step in the generation
+ process uses the appropriate paper size.
+
+[8] (F:\github\repository\kky-paper\DSVMPpdf\DSVMP.aux) ) 
+Here is how much of TeX's memory you used:
+ 2417 strings out of 495354
+ 36403 string characters out of 3182739
+ 98106 words of memory out of 3000000
+ 5567 multiletter control sequences out of 15000+200000
+ 46230 words of font info for 101 fonts, out of 3000000 for 9000
+ 17 hyphenation exceptions out of 8191
+ 27i,16n,24p,1513b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
+{D:/Program Files (x86
+)/CTEX/MiKTeX/fonts/enc/dvips/fontname/8r.enc}<D:/Program Files (x86)/CTEX/MiKT
+eX/fonts/type1/public/amsfonts/cm/cmex10.pfb><D:/Program Files (x86)/CTEX/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmmi10.pfb><D:/Program Files (x86)/CTEX/MiKTeX
+/fonts/type1/public/amsfonts/cm/cmmi7.pfb><D:/Program Files (x86)/CTEX/MiKTeX/f
+onts/type1/public/amsfonts/cm/cmr10.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fon
+ts/type1/public/amsfonts/cm/cmr7.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/
+type1/public/amsfonts/cm/cmr8.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/typ
+e1/public/amsfonts/cm/cmsy10.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/type
+1/public/amsfonts/cm/cmsy5.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/type1/
+public/amsfonts/cm/cmsy7.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/type1/pu
+blic/amsfonts/cm/cmsy8.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/type1/publ
+ic/amsfonts/symbols/msam10.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/type1/
+urw/courier/ucrr8a.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/type1/urw/time
+s/utmb8a.pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/type1/urw/times/utmbi8a.
+pfb><D:/Program Files (x86)/CTEX/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><D:/Pr
+ogram Files (x86)/CTEX/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on DSVMP.pdf (8 pages, 666603 bytes).
+PDF statistics:
+ 484 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
+
