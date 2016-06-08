@@ -407,11 +407,10 @@ emerging as a viable method for implementing code obfuscation to protect
 programs against unauthorized analysis. State-of-the-art VM-based
 protection approaches use a fixed scheduling structure where the
 program follows a single, static execution path for the same input. Such
-approaches, however, are vulnerable to dynamic cumulative attacks where the
+approaches, however, are vulnerable to certain scenarios where the
 attacker can reuse knowledge extracted from previously seen software
 to crack applications using similar protection schemes. This paper
-presents \DSVMP, a novel VM-based code obfuscation approach for protecting software
-against dynamic cumulative attacks.
+presents \DSVMP, a novel VM-based code obfuscation approach for software protection.
 \DSVMP brings together two techniques to provide stronger
 code protection than prior VM-based schemes.
 Firstly, it uses a dynamic instruction
@@ -478,13 +477,13 @@ a single set of bytecodes more complicate and uses one virtual instruction sched
 Such approaches rely on the assumption that the scheduler and the bytecode
 instruction set are difficult to be analyzed in most practical runtime
 environments. However, research has shown that is an unreliable
-assumption~\cite{10falliere2009inside} under \emph{dynamic cumulative attacks} where an adversary can easily
+assumption~\cite{10falliere2009inside} under certain scenarios (referred as \emph{cumulative attacks} in this paper) where an adversary can easily
 reuse  knowledge obtained from other
 applications protected with the same scheme to preform reverse engineering.
-To protect software against dynamic cumulative attacks, it is important to have a certain degree of uncertainty and diversity during program execution~\cite{4collberg}.
+To protect software against cumulative attacks, it is important to have a certain degree of uncertainty and diversity during program execution~\cite{4collberg}.
 
 This paper presents \DSVMP (\emph{dynamic scheduling for VM-based code protection}), a novel VM-based code protection scheme to
-address dynamic cumulative attacks.  Our key insight is that
+address cumulative attacks.  Our key insight is that
 it will be more difficult for the attacker to analyze the code if the
 program behaves differently in different runs. We achieve this by introducing
 rich uncertainty and diversity into program execution. To do so, \DSVMP
@@ -560,11 +559,11 @@ execution. Such protection will become invalid once the adversary figures out
 how bytecodes
 are mapped into native code.
 
-\textbf{Dynamic cumulative attacks} 
+\textbf{Cumulative attacks}
  Figure\ref{fig:Fig.1} illustrates how
 an attacker can reuse knowledge extracted from the
 previous runs of the same application or other applications (that are
-protected using the same VM scheme) to perform attack. This is referred as dynamic cumulative attacks in this paper. 
+protected using the same VM scheme) to perform attack. This is referred as \emph{cumulative attacks} in this paper.
 %In general, there is a strong
 %correlation that the more times the attack is, the more reusable attack
 %knowledge will be mastered, and eventually compromises the target
@@ -622,8 +621,8 @@ through using a diversified scheduling structure (Section~\ref {sec:dvs}) and
 multiple VMs (Section~\ref {sec:mvm}) in \DSVMP.
 Like other VM-based protection schemes, \DSVMP focuses on
 protecting critical code regions to minimize the runtime overhead. %\DSVMP's infrastructure also includes the dispatcher to
-%fetch the bytecode instructions. 
-Figure~\ref{fig:Fig.2} depicts the system architecture of \DSVMP. 
+%fetch the bytecode instructions.
+Figure~\ref{fig:Fig.2} depicts the system architecture of \DSVMP.
 Code protection of \DSVMP follows several steps described as follows:
 
 \paragraph*{Code translation}
@@ -633,9 +632,9 @@ instructions) using a disassembler (Step \circled{1}), which will then be mapped
 in the bytecode format (Step \circled{2}).
 
 \paragraph*{Diversifying}
-As a departure from prior work on VM-based code obfuscation, \DSVMP employs multiple VM instruction scheduling policies where each scheduler can have more than one dispatcher and each bytecode can be interpreted by more than one handers. 
-A set of dispatchers and handlers will be randomly chosen from a database to be used for a particular code region (Step \circled{3}). \FIXME{Check this!!}. 
-Furthermore, each handler will be obfuscated $VMNum$ ($VMNum >= 1$) times by using the deformation engine, resulting in $VMNum$ sets of semantically equivalent bytecode handers with different implementations and control flows (Step \circled{4}). 
+As a departure from prior work on VM-based code obfuscation, \DSVMP employs multiple VM instruction scheduling policies where each scheduler can have more than one dispatcher and each bytecode can be interpreted by more than one handers.
+A set of dispatchers and handlers will be randomly chosen from a database to be used for a particular code region (Step \circled{3}). \FIXME{Check this!!}.
+Furthermore, each handler will be obfuscated $VMNum$ ($VMNum >= 1$) times by using the deformation engine, resulting in $VMNum$ sets of semantically equivalent bytecode handers with different implementations and control flows (Step \circled{4}).
 
 
 \textbf{Step5:} Generate \emph{2*VMNum} sets of driver-data. Map VI and handlers then generates \emph{VMNum} sets driver-data (which is composed of the handler's serial number and its parameters.). And the offset value (that between the current handler and next handler) creates the rest of \emph{VMNum} sets driver-data.
@@ -643,7 +642,7 @@ Furthermore, each handler will be obfuscated $VMNum$ ($VMNum >= 1$) times by usi
 \textbf{Step6:} Construct the multiple VM, which is composed of the \emph{VMNum} sets of handlers and \emph{2*VMNum} sets of driver-data.
 
 \paragraph*{Code generation}
-Finally, a new section will be inserted into the program binary, which contains $VMNum$ VMs and their components such as dispatchers, VMContext etc. It also fills the original code region with junk instructions (Step \circled{7}). 
+Finally, a new section will be inserted into the program binary, which contains $VMNum$ VMs and their components such as dispatchers, VMContext etc. It also fills the original code region with junk instructions (Step \circled{7}).
 %\par The next few sections elaborate on the above steps, providing the technical details.
 
 \section{System Design For \DSVMP}
@@ -652,7 +651,7 @@ This paper introduces \DSVMP, which distribute a unique structure at every runti
   \centering
   % Requires \usepackage{graphicx}
   \includegraphics[width=1.0\columnwidth]{figure/figtwo.pdf}
-  \caption{Offline code protection process. \DSVMP takes in a program binary. For each protected code region, it translates native instructions into bytecodes. Next, it generates multiple bytecode handlers that are semantically equivalent but implemented in different ways. 
+  \caption{Offline code protection process. \DSVMP takes in a program binary. For each protected code region, it translates native instructions into bytecodes. Next, it generates multiple bytecode handlers that are semantically equivalent but implemented in different ways.
   It then generates the corresponding driver-data and multiple VMs. Finally, the generated VMs and associated components will be inserted into the program binary and fills the original code region with junk instructions.}\label{fig:Fig.2}
 \end{figure}
 \subsection{Diversified Scheduling Structure \label{sec:dvs}}
