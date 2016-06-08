@@ -314,6 +314,14 @@
 \usepackage{subfigure}
 \usepackage{xspace}
 \usepackage[british,UKenglish,USenglish,english,american]{babel}
+\usepackage{color}
+\usepackage{tikz}
+\usepackage{etoolbox}
+\newcommand{\circled}[2][]{\tikz[baseline=(char.base)]
+    {\node[shape = circle, draw, inner sep = 1pt]
+    (char) {\phantom{\ifblank{#1}{#2}{#1}}};%
+    \node at (char.center) {\makebox[0pt][c]{#2}};}}
+\robustify{\circled}
 
 
 \newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
@@ -322,6 +330,8 @@
 \IEEEoverridecommandlockouts
 
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand\FIXME[1]{\textcolor{red}{FIX:}\textcolor{red}{#1}}
 
 %\def\@IEEEsectpunct{.\ \,}
 %\def\paragraph{\@startsection{paragraph}{4}{\z@}{1.5ex plus 1.5ex minus 0.5ex}%
@@ -442,7 +452,7 @@ Unauthorized code analysis and modification based on reverse
 engineering is a major concern for software companies. Such attacks can lead to
 a number of undesired outcomes, including cheating in games, unauthorized
 used of software, pirated pay-tv etc. Industry is looking for techniques to
-address this issue to prevent tampering and deter reverse engineering of software systems. By making 
+address this issue to prevent tampering and deter reverse engineering of software systems. By making
 sensitive parts of the program difficult to be tracked or analyzed, code obfuscation is a potential
 solution for the problem.
 
@@ -451,33 +461,33 @@ solution for the problem.
 Code virtualization building upon a virtual machine (VM) is emerging as a
 promising way for implementing code
 obfuscation~\cite{1Themida,2CV,3Vmprotect,5fang2011multi,6ming2011software,7wang2014tdvmp,8wang2013nislvmp}.
-The idea of VM-based protection is to replace the program instructions with
-virtual bytecodes  which attackers are unfamiliar with. 
+The underlying principal of VM-based protection is to replace the program instructions with
+virtual bytecodes  which attackers are unfamiliar with.
 These virtual bytecodes will then be translated into native machine code at runtime to execute on the
 underlying hardware platform. Using a VM-based scheme, the execution path of the
 obfuscated code is controlled by a virtual instruction scheduler.
 A typical
-scheduler consists of two components: a \emph{dispatcher} that determines which bytecode is ready for execution, 
-and a \emph{bytecode handler} that translates
-the bytecode into native machine code. This process replaces the original program instructions with
+scheduler consists of two components: a \emph{dispatcher} that determines which bytecode is ready for execution,
+and a set of \emph{bytecode handlers} that translate
+bytecodes into native machine code. This process replaces the original program instructions with
 bespoke bytecodes, allowing developers to conceal the purpose or logic of sensitive code regions.
 
 
-Prior work on VM-based software protection has primarily focused on making
-a single set of bytecode more complicate and used only one virtual scheduler.
+Prior work on VM-based software protection primarily focuses on making
+a single set of bytecodes more complicate and uses one virtual instruction scheduler.
 Such approaches rely on the assumption that the scheduler and the bytecode
 instruction set are difficult to be analyzed in most practical runtime
-environments. However, research has shown that is a rather unreliable
+environments. However, research has shown that is an unreliable
 assumption~\cite{10falliere2009inside} under \emph{dynamic cumulative attacks} where an adversary can easily
-reuse  knowledge extracted from other
-applications protected with the same set of VM tools to preform reverse engineering.
-To protect software against dynamic cumulative attacks, it is vital important to introduce a certain degree of uncertainty and diversity into program execution~\cite{4collberg}.
+reuse  knowledge obtained from other
+applications protected with the same scheme to preform reverse engineering.
+To protect software against dynamic cumulative attacks, it is important to have a certain degree of uncertainty and diversity during program execution~\cite{4collberg}.
 
-This paper presents \DSVMP, a novel VM-based code protection scheme to
-address the problem of dynamic cumulative attacks.  Our key insight is that
-it will be much more difficult for the attacker to analyze the code if the
+This paper presents \DSVMP (\emph{dynamic scheduling for VM-based code protection}), a novel VM-based code protection scheme to
+address dynamic cumulative attacks.  Our key insight is that
+it will be more difficult for the attacker to analyze the code if the
 program behaves differently in different runs. We achieve this by introducing
-rich uncertainty into the program execution and bytecode interpretation. To do so, \DSVMP
+rich uncertainty and diversity into program execution. To do so, \DSVMP
 exploits a flexible, multi-dispatched scheme for code scheduling and interpretation. Unlike prior work where a program always follows a
 single, fixed execution path for the same input across different runs, the
 \DSVMP scheduler directs the program to execute a randomly selected path when
@@ -487,13 +497,13 @@ designed scheme ensures that the program will produces a deterministic output
 for the same input despite the execution paths might look differently from
 the attacker's perspective. To analyze software protected under \DSVMP, the
 adversary is forced to use a large number of trail runs to understand how the
-program algorithm works. As a result, this significantly increases the cost for code reverse-engineering.
+program algorithm works, significantly increasing the cost for code reverse-engineering.
 
 
 %Uncertainty and diversity are keys for deterring dynamic cumulative attacks.
 In addition to dynamic instruction scheduling, \DSVMP brings together two other techniques to increase diversity of program behaviour.
 Firstly, \DSVMP provides
- multiple handlers, which are implemented using different algorithms and data structures, to translate a bytecode instruction to native code.
+ a rich set of bytecode handlers, which are implemented using different algorithms and data structures, to translate a bytecode instruction to native code.
 Handlers for a particular bytecode
 all generate an identical output for the same input, but their execution paths and data accessing patterns are different from each other.
 During runtime,  our VM instruction scheduler
@@ -512,7 +522,7 @@ bytecodes instructions and VM implementations).
 
 The whole is greater than the sum of the parts.
 These techniques, putting together, enable \DSVMP to provide stronger code protection than any of the VM-based techniques seen so far.
-We have evaluated \DSVMP on four widely used hashing and encryption applications:  \texttt{md5},
+We have evaluated \DSVMP on four widely used applications:  \texttt{md5},
 \texttt{aescrypt}, \texttt{bcrypt}, and \texttt{gzip}. Experimental results show that \DSVMP provides stronger protection
 with lower runtime overhead and smaller code size compared to two commercial VM-based code obfuscation tools: Code Virtualizer~\cite{2CV} and VMProtect~\cite{3Vmprotect}.
 
@@ -530,39 +540,110 @@ This paper makes the following contributions:
 
 
 \section{Background}
-VM-based code obfuscation transform native instructions of the protected code regions to virtual instructions. The virtual instructions are encoded into bytecode  which will be translated to native machine code at runtime using a set of bytecode handlers. Indeed, a new VM section is inserted to the end of target program and remaining code is kept intact, thus entry point of the protected code is redirected into VM section. In general, classic VM bytecode execution is stack based style, and need for a virtual context (VMcontext), which usually is a block of memory that contains the virtual registers and flags. The return value of each bytecode is saved in virtual registers, for next bytecode execution. When entering the VM, the native context is stored in the VMcontext to initialize the virtual context, and when exiting the VM, native context will be restored based on the virtual context. The VM interpreter is the core of the VM, which consists of a dispatcher and the handling procedures of bytecode instructions (handlers). The main loop that iterates through three phases for every instruction: decode, dispatch and execute\cite{9ghosh2012replacement}. Werewolf or assassin, dispatcher fetch a bytecode, then decode and dispatch a handler to interpret it. Obviously, the adversary can crack the original software easily if he understands the virtual interpreter and decodes mapping between two instruction sets (binary codes and bytecodes).
+VM-based code obfuscation transforms native instructions of protected code
+regions to virtual instructions. Virtual instructions are encoded into
+bytecodes which will be translated to native machine code at runtime. At
+compile time, the target program is linked with a VM implementation and each
+entry point of a protected code region is redirected to a function call to
+the VM. Classical VM bytecodes are based on a stack machine model where
+computation is performed using stack operations like push and pop. When
+entering the VM, context of the native program, which includes information
+such as local variables, function arguments, return address etc., will be
+stored in a VM memory space called VMContext consisting of a number of
+virtual registers. When exiting the VM, the native context will be restored.
+At the heart of the VM is an interpreter with two components: a dispatcher to
+determine which virtual instruction is ready for execution and a set of
+bytecode handlers to translate a bytecode to naive machine code. The idea of
+VM-based code obfuscation is to use a set of bespoke bytecode instructions to
+make it harder to understand how the program works by tracking the program
+execution. Such protection will become invalid once the adversary figures out
+how bytecodes
+are mapped into native code.
 
-
-\textbf{Dynamic cumulative attack} Figure\ref{fig:Fig.1} illustrates how
-an attacker can perform attack by reusing knowledge extracted from the
+\textbf{Dynamic cumulative attacks} 
+ Figure\ref{fig:Fig.1} illustrates how
+an attacker can reuse knowledge extracted from the
 previous runs of the same application or other applications (that are
-protected using the same VM scheme).In general, there is a positive
-correlation that the more times the attack is, the more reusable attack
-knowledge will be mastered, and eventually compromises the target
-software. If a software shows dynamically variant execution paths in different run times, which can destroy this kind of positive correlation. Our work is to achieve this purpose.
-
+protected using the same VM scheme) to perform attack. This is referred as dynamic cumulative attacks in this paper. 
+%In general, there is a strong
+%correlation that the more times the attack is, the more reusable attack
+%knowledge will be mastered, and eventually compromises the target
+%software. If a software shows dynamically variant execution paths in different run times, which can destroy this kind of positive correlation. Our work is to achieve this purpose.
+In the first scenario, the software always follows the same execution path
+across multiple runs. In this scenario, a few runs will allow an attacker to
+obtain sufficient knowledge about the program behavior. In the second
+scenario, the program execution path changes across different runs. As such,
+it will take longer and many more runs to gather enough information to
+perform the attack. As can be seen from this simple
+illustration, diversity keys to protect against dynamic cumulative attacks. This work aims to achieve this purpose.
 
 \begin{figure}[t]%Í¼1
     \centering
     \includegraphics[width=1.0\columnwidth]{figure/figone.pdf}
-    \caption{Diversity affects effectiveness of attack. Software crack like puzzle game, the dark small square represents the reusable attack knowledge. A single structure can be defeated by cumulative attack easily, but diversity of structure can against such attacks effectively.}\label{fig:Fig.1}
+    \caption{Diversity affects effectiveness of attack. Here a dark small square represents a piece of reusable attacking knowledge. Diverse program execution increases the difficulty of attacks.}\label{fig:Fig.1}
 \end{figure}
 
 
 \section{The Attack Model}
-We assume that the adversary has an executable program of the target software, and he can run it in the malicious host environment\cite{11collberg2002watermarking}. The adversary has necessary attack technology, he can access memory or registers and trace instructions, and even can change the original instructions and control flows by using some static and dynamic analysis tools, like "IDA"\cite{14Idapro}, "Ollydbg"\cite{15Ollydbg}, "Sysinternals suite"\cite{16Sysinternalssuite}, etc. His goal is to completely reverse the internal implementation of target program, and then use that knowledge to grab benefits for his own.
-\par The classical approach to reverse engineer a VM-protected program is consists of following steps\cite{10falliere2009inside,17rolles2009unpacking}. First, reverse engineer the virtual interpreter which consists of dispatcher and handling procedures, the attacker needs to locate them and analyzes what they do. Then, use this information to collect the individual bytecode instructions and its mapping relationship with the handling procedures. Finally, recover original internal logic implementation of the target program. Once an attacker has analyzed some information about the structure, he could reuse it for continually analyzing. The cumulative attack is the attacker accumulates these reusable attack knowledges through repeated reverse analysis, and eventually compromise the target software. In our attack model, the adversary is a skilled attacker, he can use any analysis tools and be familiar with the implementation mechanisms of VM, and he follows the steps described above while reverse engineering a VM-obfuscated program.
+In this work, we assume that the adversary holds an executable binary of the
+target software and can run the program in a malicious host
+environment~\cite{11collberg2002watermarking}. We also assume the adversary
+has the tools and skills to access memory and registers, trace program
+instructions, and modify the program instructions and control flows using
+tools like ``IDA"~\cite{14Idapro}, ``Ollydbg"~\cite{15Ollydbg} and
+``Sysinternals suite"~\cite{16Sysinternalssuite}. The aim of the adversary is
+to completely reverse the internal implementation of the target program and
+then uses this information to perform attack. Our goal in this work is to
+increase the difficulties in terms of time and efforts for an adversary to
+reverse the target program implementation using VM-based code obfuscation.
 
-\section{\DSVMP Overview}
-\DSVMP is a fine-grained code virtualized software protection system that can provide a resolution to make control flow in different ways every time.
-\par Following the common practice in VM-based protection, \DSVMP also focus on protecting the critical code that has significant value, which can improve the performance. \DSVMP's infrastructure also includes the dispatcher to fetch the bytecode instructions. The implementation process of \DSVMP at a high level goes through the following steps, as shown in Figure\ref{fig:Fig.2}.
-\par \textbf{Step1:} Locate the target code segment, and use the disassembling engine to get the x86 instructions.
-\par \textbf{Step2:} Map x86 instructions to virtual instructions based on VIS (Virtual Instruction Set).
-\par \textbf{Step3:} Different from the traditional VM, \DSVMP improved the handler and dispatcher that add the structural control unit for them, which are used to realize the uncertainty structure and multi-VM scheduling.
-\par \textbf{Step4:} Generate multiple sets of handlers and dispatchers. We use the \emph{VMNum} ($>$=1) and \emph{DisNum} ($>$=1) to indicate the number of VM and dispatcher respectively. The original handlers set will be obfuscated \emph{VMNum} times by using the deformation engine, and disrupt the sequences of each set of handlers. Then we get \emph{VMNum} sets of equivalent but different forms of handlers. Similarly, generate \emph{DisNum} dispatchers which have the same function but, with various forms.
-\par \textbf{Step5:} Generate \emph{2*VMNum} sets of driver-data. Map VI and handlers then generates \emph{VMNum} sets driver-data (which is composed of the handler's serial number and its parameters.). And the offset value (that between the current handler and next handler) creates the rest of \emph{VMNum} sets driver-data.
-\par \textbf{Step6:} Construct the multiple VM, which is composed of the \emph{VMNum} sets of handlers and \emph{2*VMNum} sets of driver-data.
-\par \textbf{Step7:} Insert a new section at the end of protected file, which contains \emph{VMNum} VMs and other VM components such as dispatcher, VMcontext, VMinit and VMexit etc.
+
+
+A classical approach to reverse engineer a VM-protected program typically
+follows three steps~\cite{10falliere2009inside,17rolles2009unpacking} described as
+follows. The first step is
+to reverse engineer the two essential components of a VM interpreter: the
+dispatcher and bytecode handlers. To do so, the attacker needs to locate
+these components and analyze how the dispatcher schedules bytecode
+instructions. The second step is to understand how each bytecode is mapped to
+machine code. The third step is to use knowledge obtained in the first two
+steps to recover the original logical implementation of the target program. A
+skilled attacker is able to use knowledge gathered from parts of the program
+to analyze other protected regions of the same program or other applications
+protected using the same VM scheme and bytecode instructions. In this work,
+we assume the attacker has the necessary tools and skills to reuse knowledge
+obtained from previous runs of the same program or other programs protected
+under the same VM scheme.
+
+\section{Code protection scheme of \DSVMP}
+To address the problem of cumulative attacks, we want to introduce a certain
+degree of diversity and uncertainty into program execution. This is achieved
+through using a diversified scheduling structure (Section~\ref {sec:dvs}) and
+multiple VMs (Section~\ref {sec:mvm}) in \DSVMP.
+Like other VM-based protection schemes, \DSVMP focuses on
+protecting critical code regions to minimize the runtime overhead. %\DSVMP's infrastructure also includes the dispatcher to
+%fetch the bytecode instructions. 
+Figure~\ref{fig:Fig.2} depicts the system architecture of \DSVMP. 
+Code protection of \DSVMP follows several steps described as follows:
+
+\paragraph*{Code translation}
+\DSVMP takes in a compiled program binary and does not require having access to the source code. Code segments need to be protected
+are translated into native machine instructions (e.g. x86
+instructions) using a disassembler (Step \circled{1}), which will then be mapped into a set of virtual instructions and stored
+in the bytecode format (Step \circled{2}).
+
+\paragraph*{Diversifying}
+As a departure from prior work on VM-based code obfuscation, \DSVMP employs multiple VM instruction scheduling policies where each scheduler can have more than one dispatcher and each bytecode can be interpreted by more than one handers. 
+A set of dispatchers and handlers will be randomly chosen from a database to be used for a particular code region (Step \circled{3}). \FIXME{Check this!!}. 
+Furthermore, each handler will be obfuscated $VMNum$ ($VMNum >= 1$) times by using the deformation engine, resulting in $VMNum$ sets of semantically equivalent bytecode handers with different implementations and control flows (Step \circled{4}). 
+
+
+\textbf{Step5:} Generate \emph{2*VMNum} sets of driver-data. Map VI and handlers then generates \emph{VMNum} sets driver-data (which is composed of the handler's serial number and its parameters.). And the offset value (that between the current handler and next handler) creates the rest of \emph{VMNum} sets driver-data.
+\FIXME{I have no idea of what you are talking of here. What are dirver-data, MapVI and why we need to generate 2*VMNum sets of driver-data???!!!}
+\textbf{Step6:} Construct the multiple VM, which is composed of the \emph{VMNum} sets of handlers and \emph{2*VMNum} sets of driver-data.
+
+\paragraph*{Code generation}
+Finally, a new section will be inserted into the program binary, which contains $VMNum$ VMs and their components such as dispatchers, VMContext etc. It also fills the original code region with junk instructions (Step \circled{7}). 
 %\par The next few sections elaborate on the above steps, providing the technical details.
 
 \section{System Design For \DSVMP}
@@ -571,13 +652,33 @@ This paper introduces \DSVMP, which distribute a unique structure at every runti
   \centering
   % Requires \usepackage{graphicx}
   \includegraphics[width=1.0\columnwidth]{figure/figtwo.pdf}
-  \caption{Overview of \DSVMP. First get the VI from critical codes, and using parameters to generate multiple sets of equivalent but form different handlers. Then generate the corresponding driver-data and constitute the multi-VM. Finally add Multi-VM and other VM components to a new section and fill the junk instructions into the original key code section.}\label{fig:Fig.2}
+  \caption{Offline code protection process. \DSVMP takes in a program binary. For each protected code region, it translates native instructions into bytecodes. Next, it generates multiple bytecode handlers that are semantically equivalent but implemented in different ways. 
+  It then generates the corresponding driver-data and multiple VMs. Finally, the generated VMs and associated components will be inserted into the program binary and fills the original code region with junk instructions.}\label{fig:Fig.2}
 \end{figure}
-\subsection{Diversified Scheduling Structure}
+\subsection{Diversified Scheduling Structure \label{sec:dvs}}
 As a core of the VM, the scheduling structure should be considered first. There are three kinds of VM-based scheduling structure, the chain structure of scheduling, the centralized scheduling structure and the multi-dispatcher scheduling structure. Our system is based on the multi-dispatcher scheduling structure. Further, we redesign the atom handler and use two sets of driver-data to improve this structure.
+
 \subsubsection{Redesign the atom handler}
-The initial atom handler's structure is one set of functional components that not be obfuscated, which are scheduled for execution by the dispatcher. Traditionally, the dispatcher fetches the driver-data to decrypt and compute out the sequences of the handler. According to the sequences, one set of handlers is executed definitely. If the adversary traces the program repeatedly, it is not difficult to figure out the specific bytecode instructions.
-\par To overcome this challenge, we redesign the initial handler to create a new handler. There is an example to illustrate how we to improve and enhance the handler structure. We will insert a control unit at the end of the handler, and it used to do a random selection, return to the dispatcher or directly execute the next handler. The new handler is shown below. ¡°LOADS¡± instruction is used to fetch the extra added parameter that is the offset value of two adjacent handlers.
+The initial atom handler's structure is one set of functional components that
+not be obfuscated, which are scheduled for execution by the dispatcher.
+Traditionally, the dispatcher fetches the driver-data to decrypt and compute
+out the sequences of the handler. According to the sequences, one set of
+handlers is executed definitely. If the adversary traces the program
+repeatedly, it is not difficult to figure out the specific
+bytecode instructions.
+
+
+To overcome this challenge, we redesign the initial handler to create a new
+handler. There is an example to illustrate how we to improve and enhance the
+handler structure. We will insert a control unit at the end of the handler,
+and it used to do a random selection, return to the dispatcher or directly
+execute the next handler. The new handler is shown in Figure~\ref{fig:newhandler}. ``\texttt{LOADS}" instruction
+is used to fetch the extra added parameter
+that is the offset value of two adjacent handlers.
+
+
+\begin{figure}[t!]
+\scriptsize
 \begin{verbatim}
 lods byte/word/dword ptr ds:[esi]
 ... ...
@@ -596,6 +697,10 @@ div bl
 movzx eax,AH   //or return to dispatcher
 add eax,9dH
 \end{verbatim}
+\caption{New handler??} \FIXME{Please explain what this piece of code is about!!!}
+\label{fig:newhandler}
+\end{figure}
+
 \begin{figure}[t]
   \centering
   % Requires \usepackage{graphicx}
@@ -609,7 +714,7 @@ Only the control unit is not enough. We also need one new set of driver-data to 
 The method mentioned above can simply implement the diversity of the program execution path. Once the previous handler finished, it has the option between returning dispatcher to fetch \emph{DriverData1} and accessing the \emph{DriverData2} to fetch the offset value. Obviously, if there are more dispatchers, it will have a lot more choice.
 \par In order to explain how this scheduling structure works at runtime, we illustrative our results by some examples. If the key code segment needs five handlers and three dispatchers, there will be 4$^4$ sets structures to be chosen. Figure\ref{fig:Fig.3} shows two possible uncertainty structures. The execution sequences of basic block are very different, and the first attack knowledge on the control flow will be useless to the next attack directly.
 
-\subsection{Multi-VM switch}
+\subsection{Multi-VMs \label{sec:mvm}}
 In the default settings, VM-based obfuscation protects the key code regions with a single VM (SVM) structure. We put forward the Multi-VM (MVM) for user to choose and which contains multiple sets of equivalent but different forms of handlers and driver-data.
 \par Typically, SVM only generates one set of driver-data and handlers. No matter how complex its structure is the relationship of handler and bytecodes is fixed. This will be operable weakness for the adversary. In contrast, our MVM has a dynamic mechanism and it will provide the different handler serial numbers for different instances of protection, for the same instance, the same function handler will also have a different serial number and structure. In fact, every execution will random switch driver-data from multiple VM, and it would show different mappings between the handler and driver-data. As the adversary, if he cannot find this mapping relationship, he wouldn't restore the integrally original code and data. Next we illustrate the details of multi-VM.
 \begin{figure}[t]
