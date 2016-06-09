@@ -920,7 +920,7 @@ the 10 dispatchers (see Section~\ref{sec:mb}) -- 11 possibilities in total.
 
 
 In combination, these options give $11^{77}$ possible execution paths for each protected code region. Therefore,
-the probability, $p$, for a protected code region to follow the same execution path across different runs is $p= \frac{1}{{{{11}^{77}}}}$, a small number.
+the probability, $p$, for a protected code region to follow the same execution path across different runs is $p= \frac{1}{{{{11}^{77}}}}$, a very small number.
 Bear in mind that so far we have  assumed that the protection scheme uses just one VM. The multi-VM strategy employed by \DSVMP further increases
 the number of possible execution paths. In fact,  the more dispatchers and VMs are, the greater number of possible execution paths will be.
 The current \DSVMP implementation provides five different VMs. Together with the multiple dispatchers and bytecode instruction straggles, for the setting
