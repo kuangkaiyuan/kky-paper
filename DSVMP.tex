@@ -379,7 +379,7 @@
 \begin{document}
 
 %
-\title{Exploiting Dynamic Instruction Scheduling for VM-Based Code Obfuscation}
+\title{Exploiting Dynamic Scheduling for VM-Based Code Obfuscation}
 
 
 \author{\IEEEauthorblockN{Kaiyuan Kuang\IEEEauthorrefmark{2}, Zhanyong Tang\IEEEauthorrefmark{2}\IEEEauthorrefmark{1}\thanks{*Corresponding author. Email address: zytang@nwu.edu.cn}, Xiaoqing Gong\IEEEauthorrefmark{2}, Dingyi Fang\IEEEauthorrefmark{2}, Xiaojiang Chen\IEEEauthorrefmark{2},\\
@@ -618,6 +618,7 @@ illustration, diversity keys to protect against dynamic cumulative attacks. This
     \centering
     \includegraphics[width=1.0\columnwidth]{figure/figone.pdf}
     \caption{Diversity affects effectiveness of attack. Here a dark small square represents a piece of reusable attacking knowledge. Diverse program execution increases the difficulty of attacks.}\label{fig:Fig.1}
+    \vspace{-5mm}
 \end{figure}
 
 
@@ -828,8 +829,8 @@ STARTSDK
 00401038 sub eax, 03
 ENDSDK
 \end{lstlisting}
-
 \caption{Example assembly code snippet for a code region to be protected.}
+\vspace{-5mm}
 \label{fig:examplecode}
 \end{figure}
 
@@ -893,57 +894,51 @@ Runtime execution of the protected code region is illustrated in Figure \ref{fig
 \end{itemize}
 
 \section{Security Analysis}
-This section analyzes the security guarantee provided by \DSVMP. We first analyze the number of possible execution paths. Then we discuss the diversity of code structures. 
+This section analyzes the security strength provided by \DSVMP. We first analyze the number of possible execution paths. Then we discuss the diversity of code structures.
 
-\subsection{Dynamic program execution}
+\subsection{Program execution paths}
 Recall that our design goal is to increase the diversity of program execution,
-so that in different runts the protected region will not follow a single execution path across runs. 
-In this analysis, we assume there are 10 different dispatchers. This number matches the current implementation of \DSVMP. 
-We use the example presented in Section~\ref{sec:mbd} as a case study. 
+so that in different runts the protected region will not follow a single execution path across runs.
+In this analysis, we assume there are 10 different dispatchers. This number matches the current implementation of \DSVMP.
+We use the example presented in Section~\ref{sec:mbd} as a case study.
 In this example,  \emph{DriverDataSet11} and
 \emph{DriverDataSet21} each has 103 bytes of data. They contain a total of 78 handler
-serial numbers. In this analysis, we exclude the last handler because of it is used to exit the VM. 
+serial numbers. In this analysis, we exclude the last handler because of it is used to exit the VM.
 This leave us 77 handlers where each handler can lead to 11 different execution paths.
-This is because at the end of executing each handler, a control unit will determine whether the control should be given to another handler or one of 
-the 10 dispatchers (see Section~\ref{sec:mb}) -- 11 possibilities in total. 
+This is because at the end of executing each handler, a control unit will determine whether the control should be given to another handler or one of
+the 10 dispatchers (see Section~\ref{sec:mb}) -- 11 possibilities in total.
 
 
-Putting together, there will be $11^{77}$ possible execution paths for each protected code region. So
-the probability for a protected code region to follow the same execution path across different runs is $P = \frac{1}{{{{11}^{77}}}}$, a very small possibility. 
+Putting together, these options lead to $11^{77}$ possible execution paths for each protected code region. Therefore,
+the probability, $p$, for a protected code region to follow the same execution path across different runs is $p= \frac{1}{{{{11}^{77}}}}$, a very small possibility.
 Bear in mind that so far we have  assumed that the protection scheme uses just one VM. The multi-VM strategy employed by \DSVMP further increases
 the number of possible execution paths. In fact,  the more dispatchers and VMs are, the greater number of possible execution paths will be.
-The current \DSVMP implementation provides five different VMs. Together with the multiple dispatchers and bytecode instruction straggles, for the setting 
+The current \DSVMP implementation provides five different VMs. Together with the multiple dispatchers and bytecode instruction straggles, for the setting
 used in this section, \DSVMP gives a single code region  $11^{385}$ possible execution paths. Given the massive number of choices, it will be rare
 for a protected code region to take the same execution path across different runs.
 
 
 
-\subsection{The code level software structure similarity analysis}
-If all of the software protected by the same protection system have the exactly same features, the attacker can use these features to crack any software protected by this tool. In order to show that our system can resilient such attacks, we calculate the similarity of two software structures to assess the difficulty of attacker crack software (protected by \DSVMP).
+\subsection{Code structures}
+To prevent an adversary reuses knowledge obtained from other software to perform attacks, we would like applications protected by \DSVMP exhibit distinct 
+code structures. In other words, we would like programs after code obfuscation to be as much dissimilar as possible in terms of code structures. 
+
 %add new content 证明公式，推导过程
-\par Blietz et al.\cite{18blietz2006software} present some concept to describe the structural features of control flow, like branch number, cycle index, node nesting level and so on. On the basis of existing literature, we present some indices for structural diversity, details are as follows.
-\par \texttt{NodeNum}, is the number of basic blocks.
-\par \texttt{BranchNum}, is the number of basic blocks which the last instruction is the conditional jump instruction.
-\par $DR(Vi)$, is the basic block degree relationship of \emph{Vi}, and $DR(Vi) = {D_{in}}(Vi) + {D_{out}}(Vi)$, ${D_{out}}\left( {Vi} \right)$ refers to the out-degree and ${D_{in}}\left( {Vi} \right)$ refers to the in-degree.
-\par Similarly, $DF(Vi)$ is the data flow relationship of basic block \emph{Vi}, used to indicate the frequency of \emph{Vi}'s information exchange. $DF\left( {Vi} \right){\rm{ }} = {\rm{ }}Flo{w_{in}}(Vi) + Flo{w_{out}}(Vi)$, and $Flo{w_{in}}$ is the number of reading instruction in \emph{Vi}, $Flo{w_{out}}$ is the number of writing instruction in \emph{Vi}.
-\par As shown in Table \ref{tab:Tab.2}, the second column is the key code segment. Their structures are all very simple that only have one basic block and there is no branch block, the structure similarity is close to 100\%. We get A' and B' by using \DSVMP, the related information of the structure is also as shown in Table \ref{tab:Tab.2}. We use a formula to calculate the software structure information of A' and B' respectively, the results are as follows.
-%公式公式公式公式公式公式
-\[\begin{array}{l}
- SInfo{r_{A'}} = NodeNu{m_{A'}} + BranchNu{m_{A'}} \\
- {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  + \sum\limits_{i = 0}^{i < n} {(DR(i) + DF(i))}  \\
- {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  = 23 + 5 + (DR(0) + DR(1) + ... + DR(22) \\
- {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  + DF(0) + DF(1) + ... + DF(22)) \\
- {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  = 28 + (46 + 18){\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  = {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} 92 \\
- \end{array}\]
-\[\begin{array}{l}
- SInfo{r_{B'}} = NodeNu{m_{B'}} + BranchNu{m_{B'}} \\
- {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  + \sum\limits_{i = 0}^{i < m} {(DR(i) + DF(i))}  \\
- {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  = 48 + 9 + (DR(0) + DR(1) + ... + DR(47) \\
- {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  + DF(0) + DF(1) + ... + DF(47)) \\
- {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  = 57 + (96 + 36){\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt}  = {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} 189 \\
- \end{array}\]
+Blietz \emph{et al.}~\cite{18blietz2006software} proposed a method to measure the similarity of program structures, using control flow information such as the number of branches and back blocks, the nesting level of the code etc. We adopt this method to analyze code structures for programs protected using \DSVMP.
+We use a number of metrics to describe program code structures. These metrics are:
+
+\begin{itemize}
+\item \texttt{NodeNum}: the number of basic blocks of the protected region.
+\item \texttt{BranchNum}: the number of basic blocks where the last instruction is a conditional jump instruction.
+\item $DR(Vi)$: the number of in and out instructions for the basic block, \emph{Vi}. This metric is defined as $DR(Vi) = {D_{in}}(Vi) + {D_{out}}(Vi)$ where ${D_{out}}\left( {Vi} \right)$ refers to the out-degree and ${D_{in}}\left( {Vi} \right)$ refers to the in-degree.
+    \FIXME{What are those in and out degree things?}
+\item $DF(Vi)$: the data flow relationship of basic block, \emph{Vi}. This is used to measure the frequency of \emph{Vi}'s information exchange. It is defined as $DF\left( {Vi} \right){\rm{ }} = {\rm{ }}Flo{w_{in}}(Vi) + Flo{w_{out}}(Vi)$, where $Flo{w_{in}}$ is the number of reading instruction in \emph{Vi} and $Flo{w_{out}}$ is the number of writing instruction in \emph{Vi}.
+    \FIXME{Why those metrics are not listed in the table???!!! arrrgh!!!! Those metrics are not used anywhere in this section!!!}
+\end{itemize}    
+
 \begin{table}
   \centering
+    \caption{The relevant information about the program.}\label{tab:Tab.2}
   \begin{tabular}{|c|c|c|c|c|c|c|}
 %{|p{0.95cm}|p{1.4cm}|p{0.55cm}|p{0.55cm}|p{0.95cm}|p{0.55cm}|p{0.55cm}|}
      \hline
@@ -959,20 +954,50 @@ If all of the software protected by the same protection system have the exactly 
      B & \tabincell{l}{pop eax\\add eax,ebx} & 10 & 10 & B' & 48 & 9 \\
      \hline
    \end{tabular}
-  \caption{The relevant information about the program.}\label{tab:Tab.2}
 \end{table}
-\par From the $SInfo{r_{A'}}$ and $SInfo{r_{B'}}$, we can calculate the software structure similarity $SDiff$ of A' and B'.
-%公式
+
+Table~\ref{tab:Tab.2} gives two examples of code regions to be protected and their values of each metric. These are two simple code snippets with just one basic block and no branches. Without code obfuscation, these two examples have very similar structures because \FIXME{XX?? WHY??}. Transforming the code regions using \DSVMP, we obtain different metric values for both code regions, which indicate the transformed code segments
+have distinct structures. We use the following formula to quantify the code structure information, X after code obfuscation.
+
+\[\begin{array}{l}
+ SInfo{r_{X}} = NodeNu{m_{X}} + BranchNu{m_{X}} \\
+                                                 + \sum\limits_{i = 0}^{i < n} {(DR(i) + DF(i))}
+ \end{array}\]
+
+Applying this formula for the transformed code segments, A' and  B', listed in Table~\ref{tab:Tab.2},  we get :
+
+\[\begin{array}{l}
+ SInfo{r_{A'}} = NodeNu{m_{A'}} + BranchNu{m_{A'}} \\
+                                                 + \sum\limits_{i = 0}^{i < n} {(DR(i) + DF(i))} \\
+                                       = 23 + 5 + (DR(0) + DR(1) + ... + DR(22) \\
+                                                 + DF(0) + DF(1) + ... + DF(22)) \\
+                                       = 92 \\
+ SInfo{r_{B'}} = NodeNu{m_{B'}} + BranchNu{m_{B'}} \\
+                                                 + \sum\limits_{i = 0}^{i < m} {(DR(i) + DF(i))}  \\
+                                        = 48 + 9 + (DR(0) + DR(1) + ... + DR(47) \\
+                                                + DF(0) + DF(1) + ... + DF(47)) \\
+                                        =  189 
+\end{array}\]
+
+
+From the $SInfo{r_{A'}}$ and $SInfo{r_{B'}}$, we can calculate the software structure similarity $SDiff$ of A' and B' as:
 \[SDiff = \frac{{|SInfo{r_{A'}} - SInfo{r_{B'}}|}}{{SInfo{r_{A'}} + SInfo{r_{B'}}}}\;{\kern 1pt}  = \frac{{97}}{{281}} = 34.5\% \]
 
-\par Thus it can be seen the software structure similarity between A' and B' is only 34.5\%, \DSVMP has greatly increased the difficulty that the attacker perform the dynamic attack by using control flow and data flow information.
+Thus it can be seen the code structure similarity between two A' and B' is  34.5\%. This example shows that \DSVMP can significantly 
+increase the dissimilarity of code structures even for simple code segments.  We also observe that the similarity between transformed code 
+regions drops significantly as the complexity of original code segments increases.  
 
 \section{Performance Evaluation}
-In this section, we present a detailed discussion about experiment and cost analysis, and then evaluate the effectiveness of \DSVMP based on the experimental data in detail.
-\subsection{Security experimental evaluation}
-We verify the security of \DSVMP by using an attack experiment, and the number of VM and dispatcher in the instance is set at 3 and 5.
-\par Using the tool "IDA"\cite{14Idapro} to debug the instances,and then locate the start tag of key code segment and get the control flow graph of the program after into the virtual machine, but the last one basic block ended in an indirect jump instruction, "IDA" can not automatic acquisition the target address, so it is incomplete. We need to collect the dynamic instructions, and then manually connect the basic block to draw a complete control flow graph. By utilizing taint analysis and control dependencies to simplify and extract the software structure information. But the control flow structure has changed when we try to analyze the software again, previous attack experience is useless, we can only take time again to draw complete control flow graph in current state.
-\par Then we use a tool "OllyDbg"\cite{15Ollydbg} to perform the dynamic debugging, and then locate the dispatcher. Register ESI points to the driver-data, defining the ESI for tainted data and track its transmission process, we can find that the dispatcher fetchs the bytecode and stores it in register EAX after decryption, these are the serial number of the handler. Collect all values that scheduled by each dispatcher, as follows:
+%In this section, we first discusse the experimental and cost analysis, and then present the evaluation results of \DSVMP based on the experimental data in detail.
+
+\subsection{Experimental Setup}
+In our experiments, we used three VMs and five dispatchers for \DSVMP. 
+\DSVMP building upon IDA~\cite{14Idapro} an existing code obfuscation tool. \DSVMP uses IDA to process the program binary to locate the  code segment to protect and to obtain the control flow graph of the protected code region.
+%after into the virtual machine, but the last one basic block ended in an indirect jump instruction, "IDA" can not automatic acquisition the target address, so it is incomplete.
+%We also collected the dynamic instructions, and then manually connect the basic block to draw a complete control flow graph. 
+%By utilizing taint analysis and control dependencies to simplify and extract the software structure information. But the control flow structure has changed when we try to analyze the software again, previous attack experience is useless, we can only take time again to draw complete control flow graph in current state.
+
+\DSVMP also uses OllyDbg~\cite{15Ollydbg} to perform the dynamic debugging, and then locate the dispatcher. Register ESI points to the driver-data, defining the ESI for tainted data and track its transmission process, we can find that the dispatcher fetchs the bytecode and stores it in register EAX after decryption, these are the serial number of the handler. Collect all values that scheduled by each dispatcher, as follows:
 %\begin{verbatim}
 %00 0A 12 15 37 64 00 0A 12 89 0B 02 57 36
 %78 9A 8E 65 0C 13 25 32 11 24 0A 12 24 8F
@@ -989,11 +1014,11 @@ We verify the security of \DSVMP by using an attack experiment, and the number o
 \end{verbatim}
 \par But these serial numbers are composed of multiple VM, and it is incomplete because some handlers did not schedule through the dispatcher. So it is difficult to distinguish the relationship between these handler serial numbers and VMID. \DSVMP embed multiple sets of handler in virtual interpreter, the attacker wants to analyze these handler completely is very difficult. Even it can be fully analyzed, we still unable to crack the software, because we don't know the relationship of handler serial number and set of handler.
 
-\subsection{Runtime cost evaluation}
+\subsection{Runtime overhead}
 We evaluate the performance impact of \DSVMP on a PC with Intel$^{\circledR}$ Core$^{TM}$ 2 Duo processor at 3.00GHz with 4.00GB of RAM. The operating system environment is Windows 7. We evaluated our approach using four widely use applications, including \texttt{md5}~\cite{19md5}, \texttt{aescrypt}~\cite{20Aescrypt}, \texttt{bcrypt}~\cite{21bcrypt} and \texttt{gzip}~\cite{22gzip}.
  We used these applications to process a test image file. The size of the file is 763KB. Table III shows the basic information of these target programs. The 3th column indicates the critical function and the 4th column indicates the number of instructions in these critical functions. The numbers of instructions executed in the critical functions while processing the “test.jpg” file is shown in the last column.
 
-\subsubsection{Impact on File Size and Runtime Performance}
+\subsubsection{Impact on Code Size and Runtime}
 For each target program, we use the prototype of \DSVMP to protect it for 5 times, each time using a different number of VM. Figure \ref{fig:Fig.6} (a) shows the impact on file size of \DSVMP with multi-VM protection. Since each VM has two sets of driver-data and one set of handlers, the file size of the protected program increases as the number of VM increases. Besides, exist a positive correlation between the sizes of and the number of critical instructions, so "aescrypt" has the fastest increasing of file size, "bcrypt" is slowest.
 \par To evaluate the runtime overhead that \DSVMP introduces, we use each programs to process the "test.jpg" file for 10 times. Then we calculate the average runtime overhead per critical instruction and the results are shown in Figure \ref{fig:Fig.6} (b). The runtime overhead increases as the number of VM increases. But 3VM always has a lower overhead than 2VM, this is not just a coincidence, one possible reason is the implementation strategy we use in multi-VM protection. Besides, "aescrypt" has a much higher runtime overhead that other program. Because its critical code more complex and needs more virtual instructions to interpret.
 
