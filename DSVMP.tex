@@ -997,7 +997,9 @@ In our experiments, we used three VMs and five dispatchers for \DSVMP.
 %We also collected the dynamic instructions, and then manually connect the basic block to draw a complete control flow graph. 
 %By utilizing taint analysis and control dependencies to simplify and extract the software structure information. But the control flow structure has changed when we try to analyze the software again, previous attack experience is useless, we can only take time again to draw complete control flow graph in current state.
 
-\DSVMP also uses OllyDbg~\cite{15Ollydbg} to perform the dynamic debugging, and then locate the dispatcher. Register ESI points to the driver-data, defining the ESI for tainted data and track its transmission process, we can find that the dispatcher fetchs the bytecode and stores it in register EAX after decryption, these are the serial number of the handler. Collect all values that scheduled by each dispatcher, as follows:
+\DSVMP also uses OllyDbg~\cite{15Ollydbg} to perform the dynamic debugging, and then locate the dispatcher. It uses the x86 register \texttt{ESI} as the program counter (PC) for bytecode instruction. \DSVMP also uses \texttt{ESI} to track the movement of tainted data. 
+\DSVMP uses another register \texttt{EAX} to store the memory address of a decrypted bytecode instruction together with the serial number of the handler used
+to decode the instruction. Collect all values that scheduled by each dispatcher, as follows:
 %\begin{verbatim}
 %00 0A 12 15 37 64 00 0A 12 89 0B 02 57 36
 %78 9A 8E 65 0C 13 25 32 11 24 0A 12 24 8F
@@ -1006,20 +1008,29 @@ In our experiments, we used three VMs and five dispatchers for \DSVMP.
 %34 25 36 93 78 32 57 04 05 01 30 4C 3D 67
 %13 45 21 01 03 07
 %\end{verbatim}
-\begin{verbatim}
-00 0A 12 15 37 64 00 0A 12 89 0B 02 57 36
-78 9A 8E 65 0C 13 25 32 11 24 0A 12 24 8F
-4E 35 34 01 02 07 12 24 09 2A 31 44 05 01
-0F 12 34 52 35 09 ... ...
-\end{verbatim}
-\par But these serial numbers are composed of multiple VM, and it is incomplete because some handlers did not schedule through the dispatcher. So it is difficult to distinguish the relationship between these handler serial numbers and VMID. \DSVMP embed multiple sets of handler in virtual interpreter, the attacker wants to analyze these handler completely is very difficult. Even it can be fully analyzed, we still unable to crack the software, because we don't know the relationship of handler serial number and set of handler.
 
-\subsection{Runtime overhead}
-We evaluate the performance impact of \DSVMP on a PC with Intel$^{\circledR}$ Core$^{TM}$ 2 Duo processor at 3.00GHz with 4.00GB of RAM. The operating system environment is Windows 7. We evaluated our approach using four widely use applications, including \texttt{md5}~\cite{19md5}, \texttt{aescrypt}~\cite{20Aescrypt}, \texttt{bcrypt}~\cite{21bcrypt} and \texttt{gzip}~\cite{22gzip}.
- We used these applications to process a test image file. The size of the file is 763KB. Table III shows the basic information of these target programs. The 3th column indicates the critical function and the 4th column indicates the number of instructions in these critical functions. The numbers of instructions executed in the critical functions while processing the ¡°test.jpg¡± file is shown in the last column.
+%%%%
+%% I really don't know what those numbers are!!! I comment them out because I don't know how to explain them!!!!
+%\begin{verbatim}
+%00 0A 12 15 37 64 00 0A 12 89 0B 02 57 36
+%78 9A 8E 65 0C 13 25 32 11 24 0A 12 24 8F
+%4E 35 34 01 02 07 12 24 09 2A 31 44 05 01
+%0F 12 34 52 35 09 ... ...
+%\end{verbatim}
+%\par But these serial numbers are composed of multiple VM, and it is incomplete because some handlers did not schedule through the dispatcher. So it is difficult to distinguish the relationship between these handler serial numbers and VMID. \DSVMP embed multiple sets of handler in virtual interpreter, the attacker wants to analyze these handler completely is very difficult. Even it can be fully analyzed, we still unable to crack the software, because we don't know the relationship of handler serial number and set of handler.
 
-\subsubsection{Impact on Code Size and Runtime}
-For each target program, we use the prototype of \DSVMP to protect it for 5 times, each time using a different number of VM. Figure \ref{fig:Fig.6} (a) shows the impact on file size of \DSVMP with multi-VM protection. Since each VM has two sets of driver-data and one set of handlers, the file size of the protected program increases as the number of VM increases. Besides, exist a positive correlation between the sizes of and the number of critical instructions, so "aescrypt" has the fastest increasing of file size, "bcrypt" is slowest.
+\subsection{Evaluation platform and benchmarks}
+We evaluated \DSVMP on a PC with an 3.0 GHz Intel Core$^{TM}$ 2 Duo processor with 4GB of RAM. 
+The PC runs Windows 7 operating system. We evaluated our approach using four widely use applications: \texttt{md5}~\cite{19md5}, \texttt{aescrypt}~\cite{20Aescrypt}, \texttt{bcrypt}~\cite{21bcrypt} and \texttt{gzip}~\cite{22gzip}.
+ We used these applications to process a test image file. The size of the file is 763 KB. 
+ Table~\ref{tab:Tab.3} gives information of the protected code regions for each benchmark. 
+ The 3rd column of the table gives the function to be proected and the 4th column shows the number of instructions of the function at the program binary. 
+ Finally, the number of instructions got executed with the functions while processing the test file is shown in the last column of the table.
+
+
+
+\subsection{Code Size and Runtime}
+For each target program, we applied \DSVMP to the target function and repeated the process for five times. For each protection run, we used a different number of VMs. Figure~\ref{fig:Fig.6} (a) shows the impact on file size of \DSVMP with multi-VM protection. Since each VM has two sets of driver-data and one set of handlers, the file size of the protected program increases as the number of VM increases. Besides, exist a positive correlation between the sizes of and the number of critical instructions, so "aescrypt" has the fastest increasing of file size, "bcrypt" is slowest.
 \par To evaluate the runtime overhead that \DSVMP introduces, we use each programs to process the "test.jpg" file for 10 times. Then we calculate the average runtime overhead per critical instruction and the results are shown in Figure \ref{fig:Fig.6} (b). The runtime overhead increases as the number of VM increases. But 3VM always has a lower overhead than 2VM, this is not just a coincidence, one possible reason is the implementation strategy we use in multi-VM protection. Besides, "aescrypt" has a much higher runtime overhead that other program. Because its critical code more complex and needs more virtual instructions to interpret.
 
 \subsubsection{Comparison with two commercial VM-based protection tools}
@@ -1027,6 +1038,8 @@ To illustrate the applicability of \DSVMP, we compare it with two commercial VM 
 \par \DSVMP improved the atom handler, operations of the control unit will cost some time overhead, and embedded the multiple VM also will increase the volume. In general, our approach gets a better performance.
 \begin{table}
   \centering
+    \caption{The basic information of the target program.}\label{tab:Tab.3}
+
   \begin{tabular}{|c|c|c|c|c|}
      \hline
      % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...information of protected software
@@ -1042,7 +1055,6 @@ To illustrate the applicability of \DSVMP, we compare it with two commercial VM 
      gzip & 56 & deflate() & 154 & 35877278\\
      \hline
    \end{tabular}
-  \caption{The basic information of the target program.}\label{tab:Tab.3}
 \end{table}
 \begin{figure}[t]
 \centering
