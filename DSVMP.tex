@@ -683,7 +683,7 @@ Furthermore, each handler will be obfuscated $VMNum$ ($VMNum >= 1$) times by usi
 Finally, a new section will be inserted into the program binary, which contains $VMNum$ VMs and their components such as dispatchers, VMContext etc. It also fills the original code region with junk instructions (Step \circled{7}).
 %\par The next few sections elaborate on the above steps, providing the technical details.
 
-This is an overview of our approach. We describe the implementation of \DSVMP in more details in the following sections. 
+This is an overview of our approach. We describe the implementation of \DSVMP in more details in the following sections.
 
 \begin{figure}[t]
   \centering
@@ -699,7 +699,7 @@ This is an overview of our approach. We describe the implementation of \DSVMP in
 
 The \DSVMP VM scheduler uses multiple dispatchers to determine which bytecode instruction should be interpreted at given time.
 A unique design of \DSVMP is that the dispatcher used to schedule bytecodes will be dynamically changed at execution time. To further increase
-the diversity of program behaviour, \DSVMP also uses multiple  bytecode instruction sets and bytecode handers. 
+the diversity of program behaviour, \DSVMP also uses multiple  bytecode instruction sets and bytecode handers.
 
 \subsection{Multiple bytecode handlers \label{sec:mb}}
 
@@ -729,24 +729,24 @@ add eax,9dH
 \label{fig:newhandler}
 \end{figure}
 
-In classical VM-based code obfuscation, a single dispatcher is responsible for fetching a bytecode instruction and 
+In classical VM-based code obfuscation, a single dispatcher is responsible for fetching a bytecode instruction and
 determining which bytecode handler should be used to decode the bytecode. Because each bytecode instruction
-is decoded by a fixed handler, an adversary can easily work out the mapping of a bytecode instruction and its 
-handler. From the mapping, the adversary can correlate the native machine code to each bytecode to analyze the 
-program behavior. 
+is decoded by a fixed handler, an adversary can easily work out the mapping of a bytecode instruction and its
+handler. From the mapping, the adversary can correlate the native machine code to each bytecode to analyze the
+program behavior.
 
-To overcome this issue, for each bytecode handler, we create a number of alternative implementations which all 
+To overcome this issue, for each bytecode handler, we create a number of alternative implementations which all
 produce an equivalent output for the same input. The alternative implementations, however,
-are implemented in different ways using e.g. different algorithms, data structures or obfuscation methods. 
-We insert a control unit at the end of each bytecode handler. Before exiting a bytecode handler, 
-the control unit randomly determines whether the control should be given to a dispatcher or 
-another handler. 
+are implemented in different ways using e.g. different algorithms, data structures or obfuscation methods.
+We insert a control unit at the end of each bytecode handler. Before exiting a bytecode handler,
+the control unit randomly determines whether the control should be given to a dispatcher or
+another handler.
 
-Figure~\ref{fig:newhandler} shows an example of a \DSVMP bytecode handler. 
+Figure~\ref{fig:newhandler} shows an example of a \DSVMP bytecode handler.
 The control unit (lines 4-8) randomly determines to execute the code at line 9 or line 15. \FIXME{Check this!!}
 At line 9 , the ``\texttt{lods}" (a load operand in the x86 assembly) instruction fetch an offset value
-to calculate the address of an alternative bytecode handler. By contrast, the instruction at line 15 will return 
-to a dispatcher. 
+to calculate the address of an alternative bytecode handler. By contrast, the instruction at line 15 will return
+to a dispatcher.
 
 
 \begin{figure}[t]
@@ -756,12 +756,12 @@ to a dispatcher.
   \caption{Using multiple dispatchers and handlers increases the diversity of program executions. In this example, the type of handlers and the order of them are called are different across execution runs. }\label{fig:Fig.3}
 \end{figure}
 
-\subsection{Multiple bytecode instruction sets and dispatchers}
+\subsection{Multiple bytecode instruction sets and dispatchers \label{sec:mbd}}
 As can be seen from Figure~\ref{fig:Fig.2}, the bytecode instruction set
 determines the execution order of handlers.
 Compared to a single bytecode instruction set, multiple bytecode instruction sets  provide stronger protection because the execution order of
-handlers will be more dynamic. 
-For this reason, \DSVMP uses multiple bytecode instruction sets. 
+handlers will be more dynamic.
+For this reason, \DSVMP uses multiple bytecode instruction sets.
 
 Our current implementation provides two bytecode instruction sets:
 \emph{DriverData1} and \emph{DriverData2}. The \emph{DriverData1} is a
@@ -779,7 +779,7 @@ Recall that a control unit is inserted to the end of each handler. Before exitin
 of program execution. As an example, considering Figure~\ref{fig:Fig.3} that
 shows two possible program execution using three dispatchers. As can be seen
 from the diagram, the type of handlers to be invoked and
-the order they are called are different in two different execution runs. Therefore, knowledge about the program control flow extracted from the first run does not apply to the second one. 
+the order they are called are different in two different execution runs. Therefore, knowledge about the program control flow extracted from the first run does not apply to the second one.
 
 
 \section{Multiple VMs \label{sec:mvm}}
@@ -792,10 +792,10 @@ the order they are called are different in two different execution runs. Therefo
 
 In contrast to classical VM-based obfuscation approaches that uses a single
 VM (SVM), \DSVMP uses multiple VMs. Multiple VMs offer
-different sets handlers and bytecode instruction sets. Under such settings, 
+different sets handlers and bytecode instruction sets. Under such settings,
 bytecode instructions can be scheduled by different VMs and a bytecode instruction can be interpreted by more than one handler.
 Therefore, there will be more than one mapping from a bytecode instruction to handlers. Together with the multiple bytecode instruction sets, multiple VMs further increase
-the diversity and uncertainly of program execution. 
+the diversity and uncertainly of program execution.
 
 
 %ZW: I have to comment out this section because it is a such trivial implementation detail!
@@ -804,13 +804,13 @@ the diversity and uncertainly of program execution.
 %\par Given the above design, we need to consider one practical issue that is the balance of the security and performance. Depending on the design of the previous section, we need to generate two driver-data sets for each set of handler due to the variety of mapping relationship. So the more the embedded VM number is, the more secure the protected code and the bigger the file size will be.
 
 
-To schedule the multiple VMs, we need to alter the dispatcher structure. The dispatcher will need to determine which VM to use at runtime. 
-To do so, we first calculate the address offet between the current VM and the VM to be used. We then store the value of the register \texttt{ESI} and change the pointer of the new bytecode address according to the offset value. 
-Figure~\ref{fig:Fig.4} shows the multiple VM structure. The VM, the set of bytecode handlers and bytecode instructions will be randomly switched across different code regions in both a single execution and across different program runs. 
+To schedule the multiple VMs, we need to alter the dispatcher structure. The dispatcher will need to determine which VM to use at runtime.
+To do so, we first calculate the address offet between the current VM and the VM to be used. We then store the value of the register \texttt{ESI} and change the pointer of the new bytecode address according to the offset value.
+Figure~\ref{fig:Fig.4} shows the multiple VM structure. The VM, the set of bytecode handlers and bytecode instructions will be randomly switched across different code regions in both a single execution and across different program runs.
 
 
 %All of the dispatchers and handlers will run as the same form after being improved. They all possess the random choice function. It is hard to distinguish two types structure that can enhance the concealment of dispatchers.
-%ZW: I comment out because I have no idea what you are talking about! 
+%ZW: I comment out because I have no idea what you are talking about!
 
 
 %ZW: Have no ideas!
@@ -834,13 +834,13 @@ ENDSDK
 \end{figure}
 
 
-We use the x86 code snippet shown in Figure~\ref{fig:examplecode} as an example to illustrate how \DSVMP operates. \texttt{STARTSDK} and \texttt{ENDSDK} are used to mark the begin and end of the code region respectively, and 00401036 and 00401038 are the address the two assembly instructions. 
+We use the x86 code snippet shown in Figure~\ref{fig:examplecode} as an example to illustrate how \DSVMP operates. \texttt{STARTSDK} and \texttt{ENDSDK} are used to mark the begin and end of the code region respectively, and 00401036 and 00401038 are the address the two assembly instructions.
 
 
 \subsection{Process of protection}
-Firstly, \DSVMP will automatically insert two additional instructions (``\texttt{push 40103B}" abd ``\texttt{ret}") after \texttt{ENDSDK} in order to jump back to execute the native code after this code region. 
-It then converts the x86 instructions to bytecode instructions according to the translation convention. The resulted virtual bytecode instructions is given in Table~\ref{tab:Tab.1}. 
-\DSVMP's bytecode instructions are based on a stack machine model. Here the \texttt{load} instruction is used to push operands into the stack, and the \texttt{store} instruction is used to pop results out from the stack and store the result back to the virtual context (VMContext). 
+Firstly, \DSVMP will automatically insert two additional instructions (``\texttt{push 40103B}" abd ``\texttt{ret}") after \texttt{ENDSDK} in order to jump back to execute the native code after this code region.
+It then converts the x86 instructions to bytecode instructions according to the translation convention. The resulted virtual bytecode instructions is given in Table~\ref{tab:Tab.1}.
+\DSVMP's bytecode instructions are based on a stack machine model. Here the \texttt{load} instruction is used to push operands into the stack, and the \texttt{store} instruction is used to pop results out from the stack and store the result back to the virtual context (VMContext).
 
 \begin{table}[t]
   \centering
@@ -858,17 +858,17 @@ It then converts the x86 instructions to bytecode instructions according to the 
 \end{tabular}
 \end{table}
 
-%In this example, we use two VMs: \texttt{VM1} and \texttt{VM2}. 
-After translating the native code to virtual instructions, we use the deformation engine to transform the bytecode handlers (that will be used to interpret the virtual instructions). For this example, we generate two sets of bytecode handlers that are semantically equivalent but are implemented in different ways. 
+%In this example, we use two VMs: \texttt{VM1} and \texttt{VM2}.
+After translating the native code to virtual instructions, we use the deformation engine to transform the bytecode handlers (that will be used to interpret the virtual instructions). For this example, we generate two sets of bytecode handlers that are semantically equivalent but are implemented in different ways.
 We also randomly shuffle the serial numbers of these two sets of  handlers, resulting in two new sets of handlers: \texttt{HAS1} and \texttt{HAS2}.  Each set of bytecode handlers is associated with two bytecode instruction sets: \emph{DriverDataSet11} and \emph{DriverDataSet12} for \texttt{HSA1} and
 \emph{DriverDataSet21} and \emph{DriverDataSet22} for \texttt{HSA2}. The resulted program is illustrated in Figure~\ref{fig:Fig.5}. We store the virtual instructions in the bytecode format.
-%Transforming the improved handlers using the deformation engine, generating two sets of equivalent but form different handlers, then randomly disturb the serial number and get two new sets of handlers, HAS1 and HAS2. Then, VI was encoded into bytecodes which we call the driver-data. 
+%Transforming the improved handlers using the deformation engine, generating two sets of equivalent but form different handlers, then randomly disturb the serial number and get two new sets of handlers, HAS1 and HAS2. Then, VI was encoded into bytecodes which we call the driver-data.
 %According to HAS1, generates the \emph{DriverDataSet11}, which composed of the handler serial number and parameters, illustrated in Figure \ref{fig:Fig.5}. Then built on \emph{DriverDataSet11}, calculate the offset value and get the D\emph{riverDataSet12}. Similarly, According to VM2's HAS2 also can get two sets of driver-data \emph{DriverDataSet21} and \emph{DriverDataSet22}.
-%\par Then encrypt four sets of driver-data, the encryption key is kept by register EBX and it will be modified after each encryption. 
+%\par Then encrypt four sets of driver-data, the encryption key is kept by register EBX and it will be modified after each encryption.
 
 
 We also encrypt the resulted bytecode instructions using different keys for different sets of handlers. For example, \emph{DriverDataSet11} and \emph{DriverDataSet12} will be encrypted using one key, and \emph{DriverDataSet21} and \emph{DriverDataSet22} will be encrypted using another key. We fill the code segment to be protected with junk
-instructions. Finally, we create a new code section attached to the end of the target program. The new code section contains the implementation of the handlers, different sets of bytecode instructions, dispatchers and other VM components such \texttt{VMContext} and routines such as \texttt{VMInit} (used to initialize the VM) and \texttt{VMExit} (use for cleanup before exiting the VM). 
+instructions. Finally, we create a new code section attached to the end of the target program. The new code section contains the implementation of the handlers, different sets of bytecode instructions, dispatchers and other VM components such \texttt{VMContext} and routines such as \texttt{VMInit} (used to initialize the VM) and \texttt{VMExit} (use for cleanup before exiting the VM).
 
 
 
@@ -883,20 +883,41 @@ instructions. Finally, we create a new code section attached to the end of the t
 Runtime execution of the protected code region is illustrated in Figure \ref{fig:Fig.5}, which follows a number of steps:
 
 \begin{itemize}
-\item \textbf{Step1:} The entry of the protected code segment contains an ``\texttt{jmp VMInit}" instruction. This transfers the control to the VM initialization routine, \texttt{VMInit}, which saves the host context and initializes the virtual context. The initialized routine also selects a VM scheduler to use. In this example, we assume we use two VMs and \texttt{VM2} is chosen. 
+\item \textbf{Step1:} The entry of the protected code segment contains an ``\texttt{jmp VMInit}" instruction. This transfers the control to the VM initialization routine, \texttt{VMInit}, which saves the host context and initializes the virtual context. The initialized routine also selects a VM scheduler to use. In this example, we assume we use two VMs and \texttt{VM2} is chosen.
 \item \textbf{Step2:} Next, a dispatcher starts working. It fetches a bytecode from the \emph{DriverDataSet21}. After decoding, the dispatcher gets an address of ``\texttt{6a}". It then jumps execute ``\texttt{0x6aHandler}" \FIXME{0x6aHandler is not shown in Figure 7??} -- the next bytecode ``\texttt{07}" is its operand.
 \item \textbf{Step3:} A control unit will be executed (see Section~\ref{sec:mb}) before exiting the ``\texttt{0x6aHandler}" . The control unit randomly selects to execute another handler, ``\texttt{0x85Handler}", or return the controler to the dispatcher. If it chooses to return to the dispatcher,  the program execution moves to Step 5.
-\item \textbf{Step4:} Assume the control unit decides to execute handler, ``\texttt{0x85Handler}". It will then fetch a bytecode from \emph{DriverDataSet21}, decoding it and getting the offset address of ``\texttt{0x85Handler}" . Using the offset, the control unit will jump to \texttt{0x85Handler}. After executing the handler, the program execution moves to Step 3. 
+\item \textbf{Step4:} Assume the control unit decides to execute handler, ``\texttt{0x85Handler}". It will then fetch a bytecode from \emph{DriverDataSet21}, decoding it and getting the offset address of ``\texttt{0x85Handler}" . Using the offset, the control unit will jump to \texttt{0x85Handler}. After executing the handler, the program execution moves to Step 3.
 \item \textbf{Step5:} If the control unit chooses to return the control to a dispatcher, it will randomly select a dispatcher to continue the execution. This moves to Step 6.
-\item \textbf{Step6:} The selected dispatcher randomly selects one VM to use. The dispatcher fetches a bytecode instruction, decoding the instruction to get the handler serial number. The handler serial number tells which handler to use to translate the bytecode to native machine code. It then jumps to execute the handler.  After executing the handler, the program execution moves to Step 3. 
+\item \textbf{Step6:} The selected dispatcher randomly selects one VM to use. The dispatcher fetches a bytecode instruction, decoding the instruction to get the handler serial number. The handler serial number tells which handler to use to translate the bytecode to native machine code. It then jumps to execute the handler.  After executing the handler, the program execution moves to Step 3.
 \item \textbf{Step7:} Step 3 and Step 4 are iterated until all the bytecodes get executed. The finally step is to invoke the \texttt{VMExit} to restore the native context and to continue executing the target program.
 \end{itemize}
 
 \section{Security Analysis}
-The protected software will show the variant execution paths in different run time, related analyses are as follows.
-\subsection{Runlevel software structure similarity analysis}
-In order to gather statistics on the number of all possible execution structure when the instance runs, we assume that the number of dispatcher is 10. Here, the number of the dispatcher is an optional protective option. In the case of Section VI, the length of the \emph{DriverDataSet11} and \emph{DriverDataSet21} are all 103 byte, contains a total of 78 handler serial numbers. Remove the last handler because of it will directly exit the VM when it runs over. All the rest of the 77 handlers have 11 kinds of choice. Each handler can directly jump to the next handler, or return to one of the 10 dispatcher.
-\par So there is 11$^{77}$ possible execution paths. So the probability that appears the same control flow structure in a continuous operation is \[P = \frac{1}{{{{11}^{77}}}}\] Here just has one VM, if we embed 5 VM, each dispatcher also can have 5 kinds of choice. The more number of dispatcher and VM is, the more number of control flow structure will be. So we can know that the \DSVMP can make software with very low run level structure similarity.
+This section analyzes the security guarantee provided by \DSVMP. We first analyze the number of possible execution paths. Then we discuss the diversity of code structures. 
+
+\subsection{Dynamic program execution}
+Recall that our design goal is to increase the diversity of program execution,
+so that in different runts the protected region will not follow a single execution path across runs. 
+In this analysis, we assume there are 10 different dispatchers. This number matches the current implementation of \DSVMP. 
+We use the example presented in Section~\ref{sec:mbd} as a case study. 
+In this example,  \emph{DriverDataSet11} and
+\emph{DriverDataSet21} each has 103 bytes of data. They contain a total of 78 handler
+serial numbers. In this analysis, we exclude the last handler because of it is used to exit the VM. 
+This leave us 77 handlers where each handler can lead to 11 different execution paths.
+This is because at the end of executing each handler, a control unit will determine whether the control should be given to another handler or one of 
+the 10 dispatchers (see Section~\ref{sec:mb}) -- 11 possibilities in total. 
+
+
+Putting together, there will be $11^{77}$ possible execution paths for each protected code region. So
+the probability for a protected code region to follow the same execution path across different runs is $P = \frac{1}{{{{11}^{77}}}}$, a very small possibility. 
+Bear in mind that so far we have  assumed that the protection scheme uses just one VM. The multi-VM strategy employed by \DSVMP further increases
+the number of possible execution paths. In fact,  the more dispatchers and VMs are, the greater number of possible execution paths will be.
+The current \DSVMP implementation provides five different VMs. Together with the multiple dispatchers and bytecode instruction straggles, for the setting 
+used in this section, \DSVMP gives a single code region  $11^{385}$ possible execution paths. Given the massive number of choices, it will be rare
+for a protected code region to take the same execution path across different runs.
+
+
+
 \subsection{The code level software structure similarity analysis}
 If all of the software protected by the same protection system have the exactly same features, the attacker can use these features to crack any software protected by this tool. In order to show that our system can resilient such attacks, we calculate the similarity of two software structures to assess the difficulty of attacker crack software (protected by \DSVMP).
 %add new content 证明公式，推导过程
