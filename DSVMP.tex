@@ -1029,11 +1029,14 @@ The PC runs Windows 7 operating system. We evaluated our approach using four wid
 
 
 
-\subsection{Code Size and Runtime}
-For each target program, we applied \DSVMP to the target function and repeated the process for five times. For each protection run, we used a different number of VMs. Figure~\ref{fig:Fig.6} (a) shows the impact on file size of \DSVMP with multi-VM protection. Since each VM has two sets of driver-data and one set of handlers, the file size of the protected program increases as the number of VM increases. Besides, exist a positive correlation between the sizes of and the number of critical instructions, so "aescrypt" has the fastest increasing of file size, "bcrypt" is slowest.
-\par To evaluate the runtime overhead that \DSVMP introduces, we use each programs to process the "test.jpg" file for 10 times. Then we calculate the average runtime overhead per critical instruction and the results are shown in Figure \ref{fig:Fig.6} (b). The runtime overhead increases as the number of VM increases. But 3VM always has a lower overhead than 2VM, this is not just a coincidence, one possible reason is the implementation strategy we use in multi-VM protection. Besides, "aescrypt" has a much higher runtime overhead that other program. Because its critical code more complex and needs more virtual instructions to interpret.
+\subsection{Code Size and Runtime Overhead}
+\paragraph*{Code size} For each target benchmark, we applied \DSVMP to the target function and repeated the process for five times. For each protection run, we used a different number of VMs. Figure~\ref{fig:Fig.6} (a) shows how the \DSVMP multi-VM scheme affects the code size. 
+ As described before, each VM has two bytecode instruction sets and one set of handlers, the code size of the protected program grows as the number of VM increases. Moreover, there is a strong correlation between the code size of and the number of instructions after code obfuscation.  This explains why \texttt{aescrypt} has the fastest increase of code size as it has the largest number of instructions after code obfuscation (see Table~\ref{tab:Tab.3}.
+  For the same reason, the code size of \texttt{bcrypt} grows slower than other programs, as this benchmark has the least number of instructions after code obfuscation.  
 
-\subsubsection{Comparison with two commercial VM-based protection tools}
+\paragraph*{Runtime overhead} To evaluate the runtime overhead that \DSVMP introduces, we use each programs to process the "test.jpg" file for 10 times. Then we calculate the average runtime overhead per critical instruction and the results are shown in Figure \ref{fig:Fig.6} (b). The runtime overhead increases as the number of VM increases. But 3VM always has a lower overhead than 2VM, this is not just a coincidence, one possible reason is the implementation strategy we use in multi-VM protection. Besides, "aescrypt" has a much higher runtime overhead that other program. Because its critical code more complex and needs more virtual instructions to interpret.
+
+\subsection{Comparisons with state-of-the-arts}
 To illustrate the applicability of \DSVMP, we compare it with two commercial VM protection systems, Code Virtualizer~\cite{2CV} and VMProtect~\cite{3Vmprotect}. As we only compare the impact of code virtualization protection, we disable other protection techniques that integrated into VMProtect and CV, e.g., code compression, resource protection, etc. Besides, CV has 24 custom VMs that are devised ahead of protection, and we choose one of moderate complexity and speed, namely the FISH32 (White), to protect. As for \DSVMP, it with 2 VMs. Figure \ref{fig:Fig.7} (a) shows the impact on file size of three different VM protection systems. CV has the fastest increasing of file size, but the increasing of the size is relatively stable and independent on original program size; this is true for \DSVMP and VMProtect as well. Figure \ref{fig:Fig.7} (b) introduces the comparison of three VM protection systems on average runtime overhead. CV has the largest runtime overhead while VMProtect the smallest and \DSVMP the moderate.
 \par \DSVMP improved the atom handler, operations of the control unit will cost some time overhead, and embedded the multiple VM also will increase the volume. In general, our approach gets a better performance.
 \begin{table}
@@ -1043,7 +1046,7 @@ To illustrate the applicability of \DSVMP, we compare it with two commercial VM 
   \begin{tabular}{|c|c|c|c|c|}
      \hline
      % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...information of protected software
-     \textbf{prog.} & \textbf{Size(KB)} & \textbf{Critical code} & \textbf{\tabincell{l}{Instr.\\Protect}} & \textbf{\tabincell{l}{Instr.\\Executed}}\\
+     \textbf{prog.} & \textbf{Size(KB)} & \textbf{Func. to protect} & \textbf{\tabincell{l}{Instr.\\Protect}} & \textbf{\tabincell{l}{Instr.\\Executed}}\\
      \hline
      \hline
      md5 & 11 & Transform() & 563 & 6869163\\
