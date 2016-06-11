@@ -1030,8 +1030,8 @@ to decode the instruction. Collect all values that scheduled by each dispatcher,
 %\par But these serial numbers are composed of multiple VM, and it is incomplete because some handlers did not schedule through the dispatcher. So it is difficult to distinguish the relationship between these handler serial numbers and VMID. \DSVMP embed multiple sets of handler in virtual interpreter, the attacker wants to analyze these handler completely is very difficult. Even it can be fully analyzed, we still unable to crack the software, because we don't know the relationship of handler serial number and set of handler.
 
 \subsection{Evaluation platform and benchmarks}
-We evaluated \DSVMP on a PC with an 3.0 GHz Intel Core$^{TM}$ 2 Duo processor with 4GB of RAM.
-The PC runs Windows 7 operating system. We evaluated our approach using four widely use applications: \texttt{md5}~\cite{19md5}, \texttt{aescrypt}~\cite{20Aescrypt}, \texttt{bcrypt}~\cite{21bcrypt} and \texttt{gzip}~\cite{22gzip}.
+We evaluated \DSVMP on a PC with an 3.0 GHz Intel Core$^{TM}$ 2 Duo processor and 4GB of RAM.
+The PC runs the Windows 7 operating system. We evaluated our approach using four widely use applications: \texttt{md5}~\cite{19md5}, \texttt{aescrypt}~\cite{20Aescrypt}, \texttt{bcrypt}~\cite{21bcrypt} and \texttt{gzip}~\cite{22gzip}.
  We used these applications to process a test image file. The size of the file is 763 KB.
  Table~\ref{tab:Tab.3} gives information of the protected code regions for each benchmark.
  The 3rd column of the table gives the function to be projected and the 4th column shows the number of instructions of the function at the program binary.
