@@ -972,12 +972,20 @@ regions drops significantly as the complexity of original code segments increase
 %In this section, we first discusse the experimental and cost analysis, and then present the evaluation results of \DSVMP based on the experimental data in detail.
 
 \subsection{Experimental Setup}
+<<<<<<< HEAD
 In our experiments, we used three VMs and five dispatchers for \DSVMP. We used IDA~\cite{14Idapro} to debug the program to obtain the control flow graph of the protected code region, and used it to locate some of key nodes such as dispatcher. 
 However, for some basic blocks that end with an indirect jump instruction, IDA can not get the target address automatically. This means that the control flow graph of the program is incomplete, and we maybe lack of some key connections between basic blocks. In addition, previous attacking experience will be useless because one will have process the program binary from scratch during each program run. 
 We have to spend a lot of time to collect dynamic instructions, and as far as possible to manually connect the control flow graph in a single run.
 %The key observation here is that the control flow graph of the program every time when we process the program binary.
 %As a result, previous attacking experience will be useless because one will have process the program binary from scratch during each program run/
 \FIXME{By analyzing the control flow graph to find the key nodes dispatcher, and then through the following dynamic debugging to collect the bytecodes. In order to describe the attack experiment process.}
+=======
+In our experiments, we used three VMs and five dispatchers for \DSVMP. We used IDA~\cite{14Idapro} to debug the program to obtain the control flow graph of the protected code region. 
+However, for basic blocks that end with an indirect jump instruction, IDA can not get the target address automatically. This means that the control flow graph of the program is incomplete, 
+and as a result we maybe lack of some key connections between basic blocks. The key observation here is that the control flow graph of the program every time when we process the program binary. 
+As a result, previous attacking experience will be useless because one will have process the program binary from scratch during each program run/ 
+\FIXME{What are you trying to say here?? Why you want to talk of the incomplete control flow graph? Does it have anything to do with your experiments?}
+>>>>>>> a235b2a00e64ac94c00dbcb641165e5da923a5c1
 
 Then we used OllyDbg~\cite{15Ollydbg} to perform the dynamic debugging, and locate the dispatcher. It uses the x86 register \texttt{ESI} as the program counter for bytecode instruction. Further, we uses \texttt{ESI} to track the movement of tainted data and find that the bytecodes will be decrypted and stored in register \texttt{EAX}. This value is the serial number of handler which should be executed. We can use these values to analyze the execution order of handlers, so repeat the above operation and collect all those values that scheduled by each dispatcher. All these data, however, still cannot restore the execution logic of handlers, because these bytecodes from multiple VMs, the same data may represent different meanings. In addition, the handlers that we collected by dispatcher are not all of them, because in \DSVMP some handlers probably scheduled by other handlers (see Section~\ref{sec:dvs}). What counts is \DSVMP has the different bytecode handler scheduling for different runs, which makes the dynamic debugging more difficult.
 %\begin{verbatim}
