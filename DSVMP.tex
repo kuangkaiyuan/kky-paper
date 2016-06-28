@@ -855,7 +855,7 @@ Runtime execution of the protected code region is illustrated in Figure \ref{fig
 \item \textbf{Step3:} A control unit will be executed (see Section~\ref{sec:mb}) before exiting the ``\texttt{0x6aHandler}". The control unit randomly selects to execute another handler, ``\texttt{0x85Handler}", or return the controler to the dispatcher. If it chooses to return to the dispatcher, the program execution moves to Step 5.
 \item \textbf{Step4:} Assume the control unit decides to execute handler, ``\texttt{0x85Handler}". It will then fetch a bytecode from \emph{DriverDataSet22}, decoding it and getting the offset address of ``\texttt{0x85Handler}" . Using the offset, the control unit will jump to ``\texttt{0x85Handler}". After executing the handler, the program execution moves to Step 3.
 \item \textbf{Step5:} If the control unit chooses to return the control to a dispatcher, it will randomly select a dispatcher to continue the execution. This moves to Step 6.
-\item \textbf{Step6:} The selected dispatcher randomly selects one VM to use. The dispatcher fetches a bytecode from this VM, decoding the bytecode to get the handler serial number. 
+\item \textbf{Step6:} The selected dispatcher randomly selects one VM to use. The dispatcher fetches a bytecode from this VM, decoding the bytecode to get the handler serial number.
     %The handler serial number tells which handler to use to translate the bytecode to native machine code.
     It then jumps to execute the handler. After executing the handler, the program execution moves to Step 3.
 \item \textbf{Step7:} Step 3 and Step 4 are iterated until all the bytecodes get executed. The finally step is to invoke the \texttt{VMExit} to restore the native context and to continue executing the target program.
@@ -972,20 +972,12 @@ regions drops significantly as the complexity of original code segments increase
 %In this section, we first discusse the experimental and cost analysis, and then present the evaluation results of \DSVMP based on the experimental data in detail.
 
 \subsection{Experimental Setup}
-<<<<<<< HEAD
-In our experiments, we used three VMs and five dispatchers for \DSVMP. We used IDA~\cite{14Idapro} to debug the program to obtain the control flow graph of the protected code region, and used it to locate some of key nodes such as dispatcher. 
-However, for some basic blocks that end with an indirect jump instruction, IDA can not get the target address automatically. This means that the control flow graph of the program is incomplete, and we maybe lack of some key connections between basic blocks. In addition, previous attacking experience will be useless because one will have process the program binary from scratch during each program run. 
+In our experiments, we used three VMs and five dispatchers for \DSVMP. We used IDA~\cite{14Idapro} to debug the program to obtain the control flow graph of the protected code region, and used it to locate some of key nodes such as dispatcher.
+However, for some basic blocks that end with an indirect jump instruction, IDA can not get the target address automatically. This means that the control flow graph of the program is incomplete, and we maybe lack of some key connections between basic blocks. In addition, previous attacking experience will be useless because one will have process the program binary from scratch during each program run.
 We have to spend a lot of time to collect dynamic instructions, and as far as possible to manually connect the control flow graph in a single run.
 %The key observation here is that the control flow graph of the program every time when we process the program binary.
-%As a result, previous attacking experience will be useless because one will have process the program binary from scratch during each program run/
+%As a result, previous attacking experience will be useless because one will have process the program binary from scratch during each program run
 \FIXME{By analyzing the control flow graph to find the key nodes dispatcher, and then through the following dynamic debugging to collect the bytecodes. In order to describe the attack experiment process.}
-=======
-In our experiments, we used three VMs and five dispatchers for \DSVMP. We used IDA~\cite{14Idapro} to debug the program to obtain the control flow graph of the protected code region. 
-However, for basic blocks that end with an indirect jump instruction, IDA can not get the target address automatically. This means that the control flow graph of the program is incomplete, 
-and as a result we maybe lack of some key connections between basic blocks. The key observation here is that the control flow graph of the program every time when we process the program binary. 
-As a result, previous attacking experience will be useless because one will have process the program binary from scratch during each program run/ 
-\FIXME{What are you trying to say here?? Why you want to talk of the incomplete control flow graph? Does it have anything to do with your experiments?}
->>>>>>> a235b2a00e64ac94c00dbcb641165e5da923a5c1
 
 Then we used OllyDbg~\cite{15Ollydbg} to perform the dynamic debugging, and locate the dispatcher. It uses the x86 register \texttt{ESI} as the program counter for bytecode instruction. Further, we uses \texttt{ESI} to track the movement of tainted data and find that the bytecodes will be decrypted and stored in register \texttt{EAX}. This value is the serial number of handler which should be executed. We can use these values to analyze the execution order of handlers, so repeat the above operation and collect all those values that scheduled by each dispatcher. All these data, however, still cannot restore the execution logic of handlers, because these bytecodes from multiple VMs, the same data may represent different meanings. In addition, the handlers that we collected by dispatcher are not all of them, because in \DSVMP some handlers probably scheduled by other handlers (see Section~\ref{sec:dvs}). What counts is \DSVMP has the different bytecode handler scheduling for different runs, which makes the dynamic debugging more difficult.
 %\begin{verbatim}
@@ -1029,7 +1021,7 @@ The PC runs the Windows 7 operating system. We evaluated our approach using four
  As described before, each VM has two bytecode instruction sets and one set of handlers, the code size of the protected program grows as the number of VM increases. Moreover, there is a strong correlation between the code size of and the number of protected instructions.  This explains why \texttt{aescrypt} has the fastest increase of code size as it has the largest number of protected instructions (see Table~\ref{tab:Tab.3}). For the same reason, the code size of \texttt{bcrypt} grows slower than other programs, as this benchmark has the least number of protected instructions.
 
 \paragraph*{Runtime overhead} To evaluate the runtime overhead of \DSVMP, we used each benchmark to process the file. We repeated the process for 10 times and report the average runtime overhead per benchmark. The results are shown in Figure~\ref{fig:Fig.6} (b).
-As can be seen from this diagram, the runtime overhead increases as the number of VM used increases. The only exception is that the 3-VM configuration (3VM) has a lower overhead than a 2-VM one. One possible reason is that the implementation strategy we used for multi-VM protection. 
+As can be seen from this diagram, the runtime overhead increases as the number of VM used increases. The only exception is that the 3-VM configuration (3VM) has a lower overhead than a 2-VM one. One possible reason is that the implementation strategy we used for multi-VM protection.
 Furthermore, \texttt{aescrypt} has a much higher runtime overhead than other benchmarks. The \texttt{encrypt-stream} function of  \texttt{aescrypt} is  more complex and thus has a higher number of virtual instructions compared to other benchmarks. As such, it takes longer to execute the obfuscated code for this program compared to other benchmarks.
 
 \begin{figure}[t]
